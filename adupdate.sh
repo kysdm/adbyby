@@ -6,8 +6,8 @@ wget --no-check-certificate --tries=5 -O /tmp/video.txt https://raw.githubuserco
 #wget --tries=5 -O /tmp/user.action  http://update.adbyby.com/rule3/user.action
 
 [ -s "/tmp/lazy.txt" ] && ( ! cmp -s /tmp/lazy.txt /usr/share/adbyby/data/lazy.txt ) && mv /tmp/lazy.txt /usr/share/adbyby/data/lazy.txt	
-[ -s "/tmp/user.action" ] && ( ! cmp -s /tmp/video.txt /usr/share/adbyby/data/video.txt ) && mv /tmp/video.txt /usr/share/adbyby/data/video.txt	
-#[ -s "/tmp/video.txt" ] && ( ! cmp -s /tmp/user.action /usr/share/adbyby/user.action ) && mv /tmp/user.action /usr/share/adbyby/user.action	
+[ -s "/tmp/video.txt" ] && ( ! cmp -s /tmp/video.txt /usr/share/adbyby/data/video.txt ) && mv /tmp/video.txt /usr/share/adbyby/data/video.txt	
+#[ -s "/tmp/user.action" ] && ( ! cmp -s /tmp/user.action /usr/share/adbyby/user.action ) && mv /tmp/user.action /usr/share/adbyby/user.action	
 
 #if [ -s "/tmp/lazy.txt" -a -s "/tmp/user.action" -a -s "/tmp/video.txt" ];then
 if [ -s "/tmp/lazy.txt" -a -s "/tmp/video.txt" ];then
