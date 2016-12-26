@@ -1,5 +1,5 @@
 #!/bin/sh
-#脚本原作者Lean
+#脚本作者Lean
 
 wget --no-check-certificate --tries=5 -O /tmp/lazy.txt https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt
 wget --no-check-certificate --tries=5 -O /tmp/video.txt https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/video.txt
@@ -13,7 +13,8 @@ wget --no-check-certificate --tries=5 -O /tmp/video.txt https://raw.githubuserco
 if [ -s "/tmp/lazy.txt" -a -s "/tmp/video.txt" ];then
   echo "Adbyby Rules No Change"
  else
-  rm -f /usr/share/adbyby/update.info
+ #rm -f /usr/share/adbyby/update.info
+  touch /usr/share/adbyby/update.info
   echo "Adbyby Rules Upadated!"
 fi
 
