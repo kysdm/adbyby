@@ -1,5 +1,6 @@
 #!/bin/sh
 #脚本改自Lean
+###已经成功下载脚本###
 
 wget --no-check-certificate -O /tmp/lazy.txt https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt
 wget --no-check-certificate -O /tmp/video.txt https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/video.txt
