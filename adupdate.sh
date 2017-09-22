@@ -1,13 +1,13 @@
 #!/bin/sh
 export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
-url_main="https://raw.githubusercontent.com/adbyby/xwhyc-rules"
-url_image="https://raw.githubusercontent.com/adbyby/xwhyc-rules"
+url_main="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
+url_image="https://raw.githubusercontent.com/kysdm/adbyby/master/xwhyc-rules"
 
 #下载规则文件
 echo_date 下载规则文件中...
 
-wget -N --no-check-certificate -O /tmp/lazy.txt $url_main/master/lazy.txt
+wget -N --no-check-certificate -O /tmp/lazy.txt $url_main/lazy.txt
   if [ "$?" == "0" ]; then
     echo_date 下载lazy文件成功，继续下载video文件...
    else
@@ -16,7 +16,7 @@ wget -N --no-check-certificate -O /tmp/lazy.txt $url_main/master/lazy.txt
     exit
   fi
 
-wget -N --no-check-certificate -O /tmp/video.txt $url_image/master/video.txt
+wget -N --no-check-certificate -O /tmp/video.txt $url_image/video.txt
   if [ "$?" == "0" ]; then
     echo_date 下载video文件成功，判断规则是否有更新中...
    else
