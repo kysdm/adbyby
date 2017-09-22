@@ -12,7 +12,7 @@ chmod 777 $ADBYBY/adupdate.sh
 
 #添加计划任务
 sed -i '/adupdate.sh/d' $crontab
-	echo '03 */6 * * * /usr/share/adbyby/adupdate.sh > /tmp/log/adupdate.log 2>&1' >> $crontab
+	echo '30 */6 * * * /usr/share/adbyby/adupdate.sh > /tmp/log/adupdate.log 2>&1' >> $crontab
 	crontab $crontab
 
 #执行一次更新
