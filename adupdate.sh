@@ -35,4 +35,4 @@ fi
 rm -f /tmp/lazy.txt 
 
 #重启adbyby应用规则
-#/etc/init.d/adbyby restart
+/etc/init.d/adbyby restart
