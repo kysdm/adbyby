@@ -3,8 +3,8 @@ export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 
 #规则地址，仅可启用一个，去除#启用该地址，镜像地址规则可能非最新
-rules="https://gitee.com/kysdm/xwhyc-rules/raw/master/lazy.txt"   #镜像地址
-#rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #官方github地址
+#rules="https://gitee.com/kysdm/xwhyc-rules/raw/master/lazy.txt"   #镜像地址
+rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #官方github地址
 
 #下载规则文件
 echo_date 下载规则文件中...
@@ -22,8 +22,8 @@ wget -t10 --no-check-certificate -O /tmp/lazy.txt $rules
 version_lazy_up=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 
-if [ "$version_lazy_up" -lt "$version_lazy" ];then
-  echo_date 本地lazy规则与云端规则相同，无需更新
+if [ "$version_lazy_up" -le "$version_lazy" ];then
+  echo_date 本地lazy规则已经最新，无需更新
    rm -f /tmp/lazy.txt 
  else
    echo_date 检测到lazy规则更新，应用规则中...
@@ -32,7 +32,7 @@ if [ "$version_lazy_up" -lt "$version_lazy" ];then
 fi
 
 #删除临时规则文件
-#rm -f /tmp/lazy.txt 
+rm -f /tmp/lazy.txt 
 
 #重启adbyby应用规则
-#/etc/init.d/adbyby restart
+/etc/init.d/adbyby restart
