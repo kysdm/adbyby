@@ -22,14 +22,14 @@ wget -t10 --no-check-certificate -O /tmp/lazy.txt $rules
 version_lazy_up=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 
-if [ "$version_lazy_up" -gt "$version_lazy_up" ];then
+if [ "$version_lazy_up" -gt "$version_lazy" ];then
 #if [ "$version_lazy_up" != "$version_lazy" ];then
   echo_date 本地lazy规则与云端规则相同，无需更新
    rm -f /tmp/lazy.txt 
  else
    echo_date 检测到lazy规则更新，应用规则中...
-#   mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
-  exit
+#  mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
+   exit
 fi
 
 #删除临时规则文件
