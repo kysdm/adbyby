@@ -19,15 +19,16 @@ wget -t10 -q --no-check-certificate -O /tmp/lazy.txt $rules
  fi
 
 #判断是否有更新
-version_lazy_up=$(head -1 /tmp/lazy.txt  | awk -F' ' '{print $3,$4}')
-version_lazy=$(head -1 $ADBYBY/data/lazy.txt  | awk -F' ' '{print $3,$4}')
+version_lazy_up=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
+version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 
-if [ "$version_lazy_up" != "$version_lazy" ];then
+if [ "$version_lazy_up" -gt "$version_lazy_up" ];then
+#if [ "$version_lazy_up" != "$version_lazy" ];then
   echo_date 检测到lazy规则更新，应用规则中...
-  mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
+#   mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
  else
   echo_date 本地lazy规则与云端规则相同，无需更新
-  rm -f /tmp/lazy.txt 
+   rm -f /tmp/lazy.txt 
   exit
 fi
 
@@ -35,4 +36,4 @@ fi
 rm -f /tmp/lazy.txt 
 
 #重启adbyby应用规则
-/etc/init.d/adbyby restart
+#/etc/init.d/adbyby restart
