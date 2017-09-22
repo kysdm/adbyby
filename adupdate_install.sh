@@ -1,5 +1,6 @@
 #!/bin/sh
 export ADBYBY=/usr/share/adbyby
+crontab=/etc/crontabs/root
 
 #安装必要插件
 opkg update
@@ -10,7 +11,9 @@ wget -t10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubuserco
 chmod 777 $ADBYBY/adupdate.sh
 
 #添加计划任务
-echo "0 4 * * * sh $ADBYBY/adupdate.sh  >>/etc/crontabs/root
+sed -i '/adupdate.sh/d' $crontab
+	echo '03 */6 * * * /usr/share/adbyby/adupdate.sh > /tmp/log/adupdate.log 2>&1' >> $crontab
+	crontab $crontab
 
 #执行一次更新
 sh $ADBYBY/adupdate.sh
