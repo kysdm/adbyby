@@ -10,4 +10,7 @@ wget -t10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubuserco
 chmod 777 $ADBYBY/adupdate.sh
 
 #添加计划任务
+echo "0 4 * * * sh $ADBYBY/adupdate.sh  >>/etc/crontabs/root
 
+#执行一次更新
+sh $ADBYBY/adupdate.sh
