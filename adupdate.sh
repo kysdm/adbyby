@@ -19,9 +19,7 @@ wget -t10 -q --no-check-certificate -O /tmp/lazy.txt $rules
 
 #判断是否有更新
 version_lazy_up=$(head -1 /tmp/lazy.txt  | awk -F' ' '{print $3,$4}')
-#version_video_up=$(head -1 /tmp/video.txt | awk -F' ' '{print $3,$4}')
 version_lazy=$(head -1 $ADBYBY/data/lazy.txt  | awk -F' ' '{print $3,$4}')
-#version_lazy=$(head -1 $ADBYBY/data/video.txt  | awk -F' ' '{print $3,$4}')
 
 if [ "$version_lazy_up" != "$version_lazy" ];then
   echo_date 检测到lazy规则更新，应用规则中...
