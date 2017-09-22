@@ -3,8 +3,8 @@ export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 
 #规则地址，仅可启用一个，去除#启用该地址，镜像地址规则可能非最新
-#rules="https://gitee.com/kysdm/xwhyc-rules/raw/master/lazy.txt"   #镜像地址
-rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #官方github地址
+rules="https://gitee.com/kysdm/xwhyc-rules/raw/master/lazy.txt"   #镜像地址
+#rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #官方github地址
 
 #下载规则文件
 echo_date 下载规则文件中...
