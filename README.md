@@ -5,3 +5,5 @@ adbyby 路由版 辅助更新规则脚本
 
 用法：
 下载adupdate_install.sh脚本到路由，并执行
+
+日志文件存储在/tmp/log/adupdate.log
