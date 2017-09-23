@@ -9,7 +9,7 @@ rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #�
 #下载规则文件
 echo_date 下载规则文件中...
 echo_date 如长时间无反应，尝试挂代理后重试，或使用镜像地址
-wget -t10 --no-check-certificate -O /tmp/lazy.txt $rules
+wget -t3 -T10 --no-check-certificate -O /tmp/lazy.txt $rules
  if [ "$?" == "0" ]; then
     echo_date 下载lazy文件成功，因video文件无用跳过下载...
    else
