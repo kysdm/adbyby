@@ -25,11 +25,11 @@ version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | s
 if [ "$version_lazy_up" -le "$version_lazy" ];then
   echo_date 本地lazy规则已经最新，无需更新
    rm -f /tmp/lazy.txt 
+   exit
  else
    echo_date 检测到lazy规则更新，应用规则中...
    mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
-   /etc/init.d/adbyby restart
-   exit
+   /etc/init.d/adbyby restart  
 fi
 
 #删除临时规则文件
