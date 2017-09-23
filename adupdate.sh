@@ -28,11 +28,11 @@ if [ "$version_lazy_up" -le "$version_lazy" ];then
  else
    echo_date 检测到lazy规则更新，应用规则中...
    mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
+   /etc/init.d/adbyby restart
    exit
 fi
 
 #删除临时规则文件
 rm -f /tmp/lazy.txt 
 
-#重启adbyby应用规则
-/etc/init.d/adbyby restart
+
