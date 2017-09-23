@@ -3,8 +3,8 @@ export ADBYBY=/usr/share/adbyby
 crontab=/etc/crontabs/root
 
 #安装必要插件
-opkg update
-opkg install wget
+#opkg update
+#opkg install wget
 
 #下载脚本
 wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
