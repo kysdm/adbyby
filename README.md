@@ -1,7 +1,7 @@
 adbyby 路由版 辅助更新规则脚本
 
 适用于pandorabox openwrt LEDE 上所安装的“TuHao版luci-adbyby”
-不兼容其他固件
+不兼容其他固件（如有能力自己改脚本也是能用在其余固件）
 
 日志文件存储在/tmp/log/adupdate.log
 
