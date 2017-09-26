@@ -47,17 +47,19 @@ rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方gith
          /etc/init.d/adbyby restart
          rm -f /tmp/lazy.txt /tmp/video.txt
          exit 0
-  else
-    echo_date 检测到lazy规则更新，应用规则中...
-    mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
+    fi     
+ else
+   echo_date 检测到lazy规则更新，应用规则中...
+   mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
     if [ "$version_video_up" -le "$version_video" ];then
      echo_date 本地video规则已经最新，无需更新
      rm -f /tmp/lazy.txt /tmp/video.txt
      /etc/init.d/adbyby restart
      exit 0
-     else
-       echo_date 检测到video规则更新，应用规则中...
-       mv /tmp/video.txt $ADBYBY/data/video.txt
-       /etc/init.d/adbyby restart
-       rm -f /tmp/lazy.txt /tmp/video.txt
+    else
+     echo_date 检测到video规则更新，应用规则中...
+     mv /tmp/video.txt $ADBYBY/data/video.txt
+     /etc/init.d/adbyby restart
+     rm -f /tmp/lazy.txt /tmp/video.txt
+    fi
  fi
