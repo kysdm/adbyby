@@ -2,37 +2,62 @@
 export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 
-#规则地址，仅可启用一个，去除#启用该地址，镜像地址规则可能非最新
-#rules="https://gitee.com/kysdm/adbyby/raw/master/xwhyc-rules/lazy.txt"   #镜像地址
-rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt"  #官方github地址
+#规则地址
+rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方github地址
+
 
 #下载规则文件
-echo_date 下载规则文件中...
-echo_date 如长时间无反应，尝试挂代理后重试，或使用镜像地址
-wget -t3 -T10 --no-check-certificate -O /tmp/lazy.txt $rules
- if [ "$?" == "0" ]; then
-    echo_date 下载lazy文件成功，因video文件无用跳过下载...
-   else
-    echo_date 下载lazy文件失败，连接失败，尝试挂代理后重试
-    rm -rf /tmp/lazy.txt
-    exit
- fi
+ echo_date 下载规则文件中...
+ echo_date 如长时间无反应，尝试挂代理后重试
+
+ wget -t3 -T10 --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
+  if [ "$?" == "0" ]; then
+     echo_date 下载lazy文件成功
+  else
+     echo_date 下载lazy文件失败，连接失败，尝试挂代理后重试
+     rm -rf /tmp/lazy.txt
+     exit 0
+  fi
+
+ wget -t3 -T10 --no-check-certificate -O /tmp/video.txt $rules/video.txt
+  if [ "$?" == "0" ]; then
+     echo_date 下载video文件成功
+  else
+     echo_date 下载lazy文件失败，连接失败，尝试挂代理后重试
+     rm -rf /tmp/video.txt
+     exit 0
+  fi
 
 #判断是否有更新
-version_lazy_up=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
-version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
-
-if [ "$version_lazy_up" -le "$version_lazy" ];then
-  echo_date 本地lazy规则已经最新，无需更新
-   rm -f /tmp/lazy.txt 
-   exit
- else
-   echo_date 检测到lazy规则更新，应用规则中...
-   mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
-   /etc/init.d/adbyby restart  
-fi
-
-#删除临时规则文件
-rm -f /tmp/lazy.txt 
+ version_lazy_up=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
+ version_lazy=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
+ version_video_up=$(sed -n '1p' /tmp/video.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
+ version_video=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3 $4}' | sed 's/-//g' | sed 's/://g')
 
 
+ if [ "$version_lazy_up" -le "$version_lazy" ];then
+   echo_date 本地lazy规则已经最新，无需更新
+    if [ "$version_video_up" -le "$version_video" ];then
+       echo_date 本地video规则已经最新，无需更新
+       rm -f /tmp/lazy.txt /tmp/video.txt
+       exit 0
+       else
+         echo_date 检测到video规则更新，应用规则中...
+         mv /tmp/video.txt $ADBYBY/data/video.txt
+         /etc/init.d/adbyby restart
+         rm -f /tmp/lazy.txt /tmp/video.txt
+         exit 0
+  else
+    echo_date 检测到lazy规则更新，应用规则中...
+    mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
+    if [ "$version_video_up" -le "$version_video" ];then
+     echo_date 本地video规则已经最新，无需更新
+     rm -f /tmp/lazy.txt /tmp/video.txt
+     /etc/init.d/adbyby restart
+     exit 0
+     else
+       echo_date 检测到video规则更新，应用规则中...
+       mv /tmp/video.txt $ADBYBY/data/video.txt
+       /etc/init.d/adbyby restart
+       rm -f /tmp/lazy.txt /tmp/video.txt
+ fi
