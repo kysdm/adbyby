@@ -1,11 +1,10 @@
-﻿#!/bin/sh
+#!/bin/sh
 #kysdm(gxk7231@gmail.com)
 export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 
 #规则地址
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方github地址
-
 
 #下载规则文件
  echo_date 下载规则文件中...
@@ -48,7 +47,7 @@ rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方gith
          /etc/init.d/adbyby restart
          rm -f /tmp/lazy.txt /tmp/video.txt
          exit 0
-    fi     
+    fi
  else
    echo_date 检测到lazy规则更新，应用规则中...
    mv /tmp/lazy.txt $ADBYBY/data/lazy.txt
