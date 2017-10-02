@@ -12,7 +12,7 @@ crontab=/etc/crontabs/root
 
 #添加计划任务
  sed -i '/adupdate.sh/d' $crontab
- echo '30 */6 * * * /usr/share/adbyby/adupdate.sh > /tmp/log/adupdate.log 2>&1' >> $crontab
+ echo '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
  /etc/init.d/cron restart
 
 #执行一次更新
