@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 #kysdm(gxk7231@gmail.com)
 export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
