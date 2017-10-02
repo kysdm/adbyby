@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 export ADBYBY=/usr/share/adbyby
 crontab=/etc/crontabs/root
 
