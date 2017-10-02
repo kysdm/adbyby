@@ -6,10 +6,8 @@ crontab=/etc/crontabs/root
 # opkg remove wget
 
 #删除脚本文件
-  rm -f $ADBYBY/adupdate.sh 
+  rm -f $ADBYBY/adupdate.sh
 
 #删除计划任务
   sed -i '/adupdate.sh/d' $crontab
   /etc/init.d/cron restart
-
-
