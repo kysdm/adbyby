@@ -1,22 +1,13 @@
-adbyby 路由版 辅助更新规则脚本
+adbyby 路由版 一键安装管理脚本
 
-适用于pandorabox openwrt LEDE 上所安装的“TuHao版luci-adbyby”
-不兼容其他固件（如有能力自己改脚本也是能用在其余固件）
-
-日志文件存储在/tmp/log/adupdate.log
+适用于pandorabox openwrt LEDE 固件
 
 安装脚本
 1.使用ssh管理软件连接上路由
 2.依次执行如下3条命令
      1.opkg update && opkg install wget
-     2. wget --no-check-certificate -O /tmp/adupdate_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate_install.sh
-     3. chmod 777 /tmp/adupdate_install.sh
-     4. sh /tmp/adupdate_install.sh
+     2.wget --no-check-certificate -O /tmp/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
+     3.chmod 777 /tmp/adbyby_all_install.sh
+     4.sh /tmp/adbyby_all_install.sh
+3.按照提示使用相应功能
 
-
-卸载脚本
-1.使用ssh管理软件连接上路由
-2.依次执行如下3条命令
-     1. wget --no-check-certificate -O /tmp/adupdate_uninstall.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate_uninstall.sh
-     2. chmod 777 /tmp/adupdate_uninstall.sh
-     3. sh /tmp/adupdate_uninstall.sh
