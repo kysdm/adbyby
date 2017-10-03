@@ -5,7 +5,7 @@ export config=/etc/config
 crontab=/etc/crontabs/root
 cron=/etc/config/cron
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
-
+luci="http://code.taobao.org/svn/luci-app-adbyby" 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -107,7 +107,6 @@ auto_adupdate4_install(){
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
-
 auto_adupdate_uninstall(){
 	echo && echo -e "
 —————未安装规则辅助更新脚本启用自动更新规则功能的
@@ -156,29 +155,79 @@ auto_adupdate4_uninstall(){
     /etc/init.d/cron restart 
     echo -e "${Info} 删除成功"
 }
+
+adbyby_install(){
+    	echo && echo -e "
+————————————
+ ${Green_font_prefix}1.${Font_color_suffix} 安装ar71xx版
+ ${Green_font_prefix}2.${Font_color_suffix} 安装arm版
+ ${Green_font_prefix}3.${Font_color_suffix} 安装armv7版
+ ${Green_font_prefix}4.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版
+ ${Green_font_prefix}5.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
+ ${Green_font_prefix}6.${Font_color_suffix} 安装最新 pandorabox专用版(2016.10之后的固件)
+ ${Green_font_prefix}7.${Font_color_suffix} 安装7620A（N)和7621 pandorabox小闪存专用版(每次开机时下载主程序到内存中运行)
+ ${Green_font_prefix}8.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件)(每次开机时下载主程序到内存中运行)
+ ${Green_font_prefix}9.${Font_color_suffix} 安装X86版
+ ${Green_font_prefix}10.${Font_color_suffix} 安装X64版
+ ${Green_font_prefix}11.${Font_color_suffix} 退出
+————————————" && echo
+    read -p " 现在选择顶部选项 [1-11]: " input
+    case $input in 
+	 1) ar71xx;;
+	 2) arm;;
+	 3) armv7;;
+     4) pandorabox_dedicated;;
+	 5) OPENWRT_dedicated;;
+     6) pandorabox_dedicated_new;;
+     7) pandorabox_dedicated_small;;
+     8) pandorabox_dedicated_small_new;;
+     9) x86;;
+     10) x64;;
+	 11) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-11]" && exit 1;;
+    esac
+}
+ar71xx(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_ar71xx.ipk
+}
+arm(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_arm.ipk
+}
+armv7(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_armv7.ipk
+pandorabox_dedicated(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_ralink.ipk
+}
+OPENWRT_dedicated(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_ramips_24kec.ipk
+}
+pandorabox_dedicated_new(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
+}
+pandorabox_dedicated_small(){
+    opkg update
+    opkg install $luci/adbyby_mini_2.7-7.0_ralink.ipk
+}
+pandorabox_dedicated_small_new(){
+    opkg update
+    opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
+}
+x86(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_x86.ipk 
+}
+x64(){
+    opkg update
+    opkg install $luci/adbyby_2.7-7.0_x64.ipk
+}
+
 #主菜单
-# cat << EOF
-#  ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
-# ********请输入您的选择:(1-13)****
-#  \${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序  待做
-#  \${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序  待做 
-# ————————————
-#  ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-#  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
-#  ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
-#  ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
-# ————————————
-#  ${Green_font_prefix}7.${Font_color_suffix} 添加自动更新规则功能
-# ————————————
-#  ${Green_font_prefix}8.${Font_color_suffix} 重启ADBYBY主程序
-#  ${Green_font_prefix}9.${Font_color_suffix} 停止ADBYBY进程
-#  ${Green_font_prefix}10.${Font_color_suffix} 查看规则辅助更新脚本日志
-# ————————————
-#  ${Green_font_prefix}11.${Font_color_suffix} 其他功能 待做
-#  ${Green_font_prefix}12.${Font_color_suffix} 升级脚本 待做
-#  ${Green_font_prefix}13.${Font_color_suffix} 退出菜单
-# ————————————
-# EOF
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
