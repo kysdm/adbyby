@@ -11,52 +11,46 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
-sh_ver="1.0.1"
+sh_ver="1.0.2"
 
-
-
-# #下载规则辅助更新脚本
-# Download_adupdate(){
-# 	wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
-#     chmod 777 $ADBYBY/adupdate.sh
-#     echo -e "${Info} 下载成功   #可增加判断机制
-# }
-
-# #更新规则辅助更新脚本
-# Update_adupdate(){
-# 	echo -e "${Error} 暂时未完成此功能"
-# }
-
-# #删除规则辅助更新脚本
-# delete_adupdate(){
-# 	rm -f $ADBYBY/adupdate.sh
-# 	echo -e "${Info} 删除成功"
-# }
-
-# #运行脚本,执行一次更新
-# run_adupdate(){
-#     sh $ADBYBY/adupdate.sh
-# }
-# #重启ADBYBY主程序
-# restart_adbyby(){
-#     /etc/init.d/adbyby restart 2>&1
-#     echo -e "${Info} 重启完成"
-# }
-# #重启crontab进程
-# restart_crontab(){
-#     /etc/init.d/cron restart 2>&1
-#     echo -e "${Info} 重启完成"
-# }
-# #查看规则辅助更新脚本日志
-# check_adupdate_log(){
-#     cat /tmp/log/adupdate.log
-# }
-# #停止ADBYBY进程
-# stop_adbyby(){
-#     /etc/init.d/adbyby stop
-#     echo -e "${Info} 停止成功"
-# }
-
+#下载规则辅助更新脚本
+Download_adupdate(){
+    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
+    chmod 777 $ADBYBY/adupdate.sh
+    echo -e "${Info} 下载成功"   #可增加判断机制
+}
+#更新规则辅助更新脚本
+Update_adupdate(){
+    echo -e "${Error} 暂时未完成此功能"
+}
+#删除规则辅助更新脚本
+delete_adupdate(){
+ 	rm -f $ADBYBY/adupdate.sh
+ 	echo -e "${Info} 删除成功"
+}
+#运行脚本,执行一次更新
+run_adupdate(){
+    sh $ADBYBY/adupdate.sh
+}
+#重启ADBYBY主程序
+restart_adbyby(){
+    /etc/init.d/adbyby restart 2>&1
+    echo -e "${Info} 重启完成"
+}
+#重启crontab进程
+restart_crontab(){
+    /etc/init.d/cron restart 2>&1
+    echo -e "${Info} 重启完成"
+}
+#查看规则辅助更新脚本日志
+check_adupdate_log(){
+    cat /tmp/log/adupdate.log
+}
+#停止ADBYBY进程
+stop_adbyby(){
+    /etc/init.d/adbyby stop
+    echo -e "${Info} 停止成功"
+}
 # # # 计划任务
 # # auto_adupdate(){
 # #   echo && echo -e"${Tip}未安装规则辅助更新脚本，运行1
