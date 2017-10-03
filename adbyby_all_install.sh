@@ -137,7 +137,7 @@ auto_adupdate1_uninstall(){
 	   /etc/init.d/cron restart
        echo -e "${Info} 删除成功";
 	 else
-     echo -e "${Info} 未添加计划任务"
+     echo -e "${Error} 未添加计划任务"
 	fi 
 }
 auto_adupdate2_uninstall(){
@@ -156,7 +156,7 @@ auto_adupdate4_uninstall(){
 }
 
 adbyby_install(){
-    	echo && echo -e "
+    echo && echo -e "
 ————————————
   ${Green_font_prefix}1.${Font_color_suffix} 安装ar71xx版
   ${Green_font_prefix}2.${Font_color_suffix} 安装arm版
@@ -229,11 +229,35 @@ x64(){
 adbyby_uninstall(){
     list_installed=$(opkg list-installed | grep adbyby)
     if  grep -q adbyby $list_installed ; then
-     opkg remove adbyby
-     echo -e "${Info} 卸载成功";
+      opkg remove adbyby
+      echo -e "${Info} 卸载成功";
 	 else
       echo -e "${Error} 未安装ADBYBY"
 	fi 
+}
+
+other(){
+       echo && echo -e "
+————————————
+  ${Green_font_prefix}1.${Font_color_suffix} 关闭获取主服务器规则(只获取GitHub上的规则)
+  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)
+  ${Green_font_prefix}3.${Font_color_suffix} 退出
+————————————" && echo
+    read -p " 现在选择顶部选项 [1-3]: " input
+    case $input in 
+	 1) kill_rule_server;;
+	 2) re_rule_server;;
+	 3) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-3]" && exit 1;;
+    esac 
+}
+kill_rule_server(){
+    sed -i 's/video,lazya/none/g' $ADBYBY/adhook.ini
+    echo -e "${Info} 更改成功"
+}
+re_rule_server(){
+    sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
+    echo -e "${Info} 更改成功"
 }
 
 #主菜单
@@ -256,7 +280,7 @@ ${Font_color_suffix}————————————
  ${Green_font_prefix}10.${Font_color_suffix} 停止ADBYBY进程
  ${Green_font_prefix}11.${Font_color_suffix} 查看规则辅助更新脚本日志
 ————————————
- ${Green_font_prefix}12.${Font_color_suffix} 其他功能 待做
+ ${Green_font_prefix}12.${Font_color_suffix} 其他功能 
  ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 待做
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
 ————————————" && echo
@@ -273,7 +297,7 @@ case $input in
 	9) restart_adbyby;;
 	10) stop_adbyby;;
 	11) check_adupdate_log;;
-	12) echo -e  "${Error} 未完成";;
+	12) other;;
 	13) echo -e  "${Error} 未完成";;
 	14) exit 0	;;
 	*) echo -e "${Error} 请输入正确的数字 [1-14]" && exit 1;;
