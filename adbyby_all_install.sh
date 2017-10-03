@@ -226,14 +226,23 @@ x64(){
     opkg update
     opkg install $luci/adbyby_2.7-7.0_x64.ipk
 }
+adbyby_uninstall(){
+    list_installed=$(opkg list-installed | grep adbyby)
+    if  grep -q adbyby $list_installed ; then
+     opkg remove adbyby
+     echo -e "${Info} 卸载成功";
+	 else
+      echo -e "${Error} 未安装ADBYBY"
+	fi 
+}
 
 #主菜单
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
-  ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序  待做
-  ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序  待做 
+  ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序
+  ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
   ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
@@ -254,7 +263,7 @@ ${Font_color_suffix}————————————
 read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
 	1) adbyby_install;;
-	2) echo -e  "${Error} 未完成";;
+	2) adbyby_uninstall;;
 	3) Download_adupdate;;
     4) Update_adupdate;;
 	5) delete_adupdate;;
