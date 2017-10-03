@@ -242,7 +242,7 @@ echo && echo -e "
  ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
   ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序
-  ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序
+  ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
   ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
