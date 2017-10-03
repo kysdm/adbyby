@@ -181,7 +181,8 @@ auto_adupdate4_uninstall(){
 # EOF
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
-————————————
+ ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
+${Font_color_suffix}————————————
  ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序  待做
  ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序  待做 
 ————————————
