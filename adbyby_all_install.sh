@@ -10,7 +10,6 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
-
 sh_ver="1.0.2"
 
 Download_adupdate(){
@@ -159,15 +158,15 @@ auto_adupdate4_uninstall(){
 adbyby_install(){
     	echo && echo -e "
 ————————————
- ${Green_font_prefix}1.${Font_color_suffix} 安装ar71xx版
- ${Green_font_prefix}2.${Font_color_suffix} 安装arm版
- ${Green_font_prefix}3.${Font_color_suffix} 安装armv7版
- ${Green_font_prefix}4.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版
- ${Green_font_prefix}5.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
- ${Green_font_prefix}6.${Font_color_suffix} 安装最新 pandorabox专用版(2016.10之后的固件)
- ${Green_font_prefix}7.${Font_color_suffix} 安装7620A（N)和7621 pandorabox小闪存专用版(每次开机时下载主程序到内存中运行)
- ${Green_font_prefix}8.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件)(每次开机时下载主程序到内存中运行)
- ${Green_font_prefix}9.${Font_color_suffix} 安装X86版
+  ${Green_font_prefix}1.${Font_color_suffix} 安装ar71xx版
+  ${Green_font_prefix}2.${Font_color_suffix} 安装arm版
+  ${Green_font_prefix}3.${Font_color_suffix} 安装armv7版
+  ${Green_font_prefix}4.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版
+  ${Green_font_prefix}5.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
+  ${Green_font_prefix}6.${Font_color_suffix} 安装最新 pandorabox专用版(2016.10之后的固件)
+  ${Green_font_prefix}7.${Font_color_suffix} 安装7620A（N)和7621 pandorabox小闪存专用版(每次开机时下载主程序到内存中运行)
+  ${Green_font_prefix}8.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件)(每次开机时下载主程序到内存中运行)
+  ${Green_font_prefix}9.${Font_color_suffix} 安装X86版
  ${Green_font_prefix}10.${Font_color_suffix} 安装X64版
  ${Green_font_prefix}11.${Font_color_suffix} 退出
 ————————————" && echo
@@ -198,6 +197,7 @@ arm(){
 armv7(){
     opkg update
     opkg install $luci/adbyby_2.7-7.0_armv7.ipk
+}
 pandorabox_dedicated(){
     opkg update
     opkg install $luci/adbyby_2.7-7.0_ralink.ipk
@@ -232,18 +232,18 @@ echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
- ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序  待做
- ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序  待做 
+  ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序  待做
+  ${Green_font_prefix}2.${Font_color_suffix} 删除LCUI_ADBYBY程序  待做 
 ————————————
- ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
- ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
- ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
- ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
+  ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
+  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
+  ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
+  ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
- ${Green_font_prefix}7.${Font_color_suffix} 添加自动更新规则功能
- ${Green_font_prefix}8.${Font_color_suffix} 删除自动更新规则功能
+  ${Green_font_prefix}7.${Font_color_suffix} 添加自动更新规则功能
+  ${Green_font_prefix}8.${Font_color_suffix} 删除自动更新规则功能
 ————————————
- ${Green_font_prefix}9.${Font_color_suffix} 重启ADBYBY主程序
+  ${Green_font_prefix}9.${Font_color_suffix} 重启ADBYBY主程序
  ${Green_font_prefix}10.${Font_color_suffix} 停止ADBYBY进程
  ${Green_font_prefix}11.${Font_color_suffix} 查看规则辅助更新脚本日志
 ————————————
@@ -253,7 +253,7 @@ ${Font_color_suffix}————————————
 ————————————" && echo
 read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
-	1) echo -e  "${Error} 未完成";;
+	1) adbyby_install;;
 	2) echo -e  "${Error} 未完成";;
 	3) Download_adupdate;;
     4) Update_adupdate;;
