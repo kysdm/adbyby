@@ -10,7 +10,7 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
-sh_ver="1.0.5"
+sh_ver="1.0.6"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
@@ -241,14 +241,20 @@ other(){
 ————————————
   ${Green_font_prefix}1.${Font_color_suffix} 关闭获取主服务器规则(只获取GitHub上的规则)
   ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)
-  ${Green_font_prefix}3.${Font_color_suffix} 退出
+————————————
+  ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
+  ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
+———————————— 
+  ${Green_font_prefix}5.${Font_color_suffix} 退出
 ————————————" && echo
-    read -p " 现在选择顶部选项 [1-3]: " input
+    read -p " 现在选择顶部选项 [1-5]: " input
     case $input in 
 	 1) kill_rule_server;;
 	 2) re_rule_server;;
-	 3) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-3]" && exit 1;;
+     3) cat_lazy;;
+	 4) cat_video;;
+	 5) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-5]" && exit 1;;
     esac 
 }
 kill_rule_server(){
@@ -259,11 +265,18 @@ re_rule_server(){
     sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
     echo -e "${Info} 更改成功"
 }
-
+cat_lazy(){
+    lazy_time=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
+    echo -e "${Info} $lazy_time"
+}
+cat_video(){
+    video_time=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
+    echo -e "${Info} $video_time"
+}
 #主菜单
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
- ${Red_font_prefix} 适用于pandorabox openwrt LEDE 固件 
+ ${Green_font_prefix} 适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
   ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
