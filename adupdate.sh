@@ -1,12 +1,10 @@
 #!/bin/sh
 #kysdm(gxk7231@gmail.com)
-export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
+export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 sh_ver="1.0.3"
-
-#规则地址
-rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方github地址
+rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then

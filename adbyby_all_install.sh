@@ -6,6 +6,7 @@ crontab=/etc/crontabs/root
 cron=/etc/config/cron
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 luci="http://code.taobao.org/svn/luci-app-adbyby" 
+kysdm_github="https://raw.githubusercontent.com/kysdm/adbyby" 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -21,7 +22,27 @@ Download_adupdate(){
     echo -e "${Info} 下载成功"   #可增加判断机制
 }
 Update_adupdate(){
-    echo -e "${Error} 暂时未完成此功能"
+    echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
+	sh_new_ver=$(wget --no-check-certificate -qO- "$kysdm_github/master/adbyby_all_install.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
+	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
+		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
+		read -p "(默认: y):" yn
+		[[ -z "${yn}" ]] && yn="y"
+        case $yn in 
+         y|Y) 
+         wget -t3 -T10 --no-check-certificate -O "$ADBYBY/adbyby_all_install.sh" "$kysdm_github/master/adbyby_all_install.sh" 
+         chmod 777 $ADBYBY/adbyby_all_install.sh
+         echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
+         ;;
+         n|N)
+         echo "已取消..."
+         ;;
+        esac 
+	else
+		echo -e "当前已是最新版本[ ${sh_new_ver} ] !"
+	fi
+	exit 0
 }
 delete_adupdate(){
  	rm -f $ADBYBY/adupdate.sh
@@ -306,7 +327,7 @@ ${Font_color_suffix}————————————
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本  待做
+  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本
   ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
   ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
@@ -339,3 +360,4 @@ case $input in
 	14) exit 0	;;
 	*) echo -e "${Error} 请输入正确的数字 [1-14]" && exit 1;;
 esac
+
