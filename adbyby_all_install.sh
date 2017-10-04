@@ -17,11 +17,11 @@ opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 sh_ver="1.0.9"
 
 Download_adupdate(){
-    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
+    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
     chmod 777 $ADBYBY/adupdate.sh
     echo -e "${Info} 下载成功"   #可增加判断机制
 }
-Update_adupdate(){
+Update_all_install(){
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
 	sh_new_ver=$(wget --no-check-certificate -qO- "$kysdm_github/master/adbyby_all_install.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
@@ -36,11 +36,34 @@ Update_adupdate(){
          echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
          ;;
          n|N)
-         echo "已取消..."
+         echo "${Info} 已取消..."
          ;;
         esac 
 	else
-		echo -e "当前已是最新版本[ ${sh_new_ver} ] !"
+		echo -e "${Info} 当前已是最新版本[ ${sh_new_ver} ] !"
+	fi
+	exit 0
+}
+Update_adupdate(){
+    echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
+	sh_new_ver=$(wget --no-check-certificate -qO- "$kysdm_github/master/adupdate.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1 )
+	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
+	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
+		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
+		read -p "(默认: y):" yn
+		[[ -z "${yn}" ]] && yn="y"
+        case $yn in 
+         y|Y) 
+         wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
+         chmod 777 $ADBYBY/adupdate.sh
+         echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
+         ;;
+         n|N)
+         echo "${Info} 已取消..."
+         ;;
+        esac 
+	else
+		echo -e "${Info} 当前已是最新版本[ ${sh_new_ver} ] !"
 	fi
 	exit 0
 }
@@ -327,7 +350,7 @@ ${Font_color_suffix}————————————
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本
+  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本 待做
   ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
   ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
@@ -339,7 +362,7 @@ ${Font_color_suffix}————————————
  ${Green_font_prefix}11.${Font_color_suffix} 查看规则辅助更新脚本日志
 ————————————
  ${Green_font_prefix}12.${Font_color_suffix} 其他功能 
- ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 待做
+ ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
 ————————————" && echo
 read -p "现在选择顶部选项 [1-14]: " input
@@ -356,7 +379,7 @@ case $input in
 	10) stop_adbyby;;
 	11) check_adupdate_log;;
 	12) other;;
-	13) echo -e  "${Error} 未完成";;
+	13) Update_all_install;;
 	14) exit 0	;;
 	*) echo -e "${Error} 请输入正确的数字 [1-14]" && exit 1;;
 esac
