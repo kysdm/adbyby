@@ -3,20 +3,19 @@
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
-sh_ver="1.0.3"
+sh_ver="1.0.4"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
-   echo "NO" >> $ADBYBY/create_jd.txt
+   echo "NO" > $ADBYBY/create_jd.txt
 fi
 
 #下载规则文件
  echo_date -----------------------------------------------
  echo_date 脚本开始运行
  echo_date 下载规则文件中...
- echo_date 如长时间无反应，尝试挂代理后重试
 
  wget -t3 -T10 --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
   if [ "$?" == "0" ]; then
