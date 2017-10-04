@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.0"
+sh_ver="1.1.2"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -23,7 +23,8 @@ Download_adupdate(){
 }
 Update_all_install(){
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-	sh_new_ver=$(wget --no-check-certificate -qO- "$kysdm_github/master/adbyby_all_install.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+    wget -t3 -T10 --no-check-certificate -q -O /tmp/adbyby_all_install.sh $kysdm_github/master/adbyby_all_install.sh
+	sh_new_ver=$(grep 'sh_ver="' /tmp/adbyby_all_install.sh |awk -F "=" '{print $NF}'| sed 's/\"//g' | sed -n '1p')
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
@@ -31,8 +32,9 @@ Update_all_install(){
 		[[ -z "${yn}" ]] && yn="y"
         case $yn in 
          y|Y) 
-         wget -t3 -T10 --no-check-certificate -O "$ADBYBY/adbyby_all_install.sh" "$kysdm_github/master/adbyby_all_install.sh" 
+         cp -f /tmp/adbyby_all_install.sh $ADBYBY/adbyby_all_install.sh
          chmod 777 $ADBYBY/adbyby_all_install.sh
+         rm -f /tmp/adbyby_all_install.sh
          echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
          ;;
          n|N)
@@ -45,8 +47,10 @@ Update_all_install(){
 	exit 0
 }
 Update_adupdate(){
+    sh_ver=$(grep 'sh_ver="' $ADBYBY/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-	sh_new_ver=$(wget --no-check-certificate -qO- "$kysdm_github/master/adupdate.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1 )
+    wget -t3 -T10 --no-check-certificate -q -O /tmp/adupdate.sh $kysdm_github/master/adupdate.sh
+	sh_new_ver=$(grep 'sh_ver="' /tmp/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
@@ -54,8 +58,9 @@ Update_adupdate(){
 		[[ -z "${yn}" ]] && yn="y"
         case $yn in 
          y|Y) 
-         wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
+         cp -f /tmp/adupdate.sh $ADBYBY/adupdate.sh
          chmod 777 $ADBYBY/adupdate.sh
+         rm -f /tmp/adupdate.sh
          echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
          ;;
          n|N)
