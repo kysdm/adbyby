@@ -10,7 +10,7 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
-sh_ver="1.0.6"
+sh_ver="1.0.8"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adupdate.sh
@@ -22,6 +22,7 @@ Update_adupdate(){
 }
 delete_adupdate(){
  	rm -f $ADBYBY/adupdate.sh
+    rm -f $ADBYBY/create_jd.txt
  	echo -e "${Info} 删除成功"
 }
 run_adupdate(){
@@ -235,12 +236,12 @@ adbyby_uninstall(){
       echo -e "${Error} 未安装ADBYBY"
 	fi 
 }
-
+#其他功能 
 other(){
        echo && echo -e "
 ————————————
   ${Green_font_prefix}1.${Font_color_suffix} 关闭获取主服务器规则(只获取GitHub上的规则)
-  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)
+  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)[需要有空间安装chattr,8M闪存的可以放弃了]
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
   ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
@@ -259,10 +260,28 @@ other(){
 }
 kill_rule_server(){
     sed -i 's/video,lazya/none/g' $ADBYBY/adhook.ini
+    echo "" > $ADBYBY/create_jd.txt
+    echo "YES" >> $ADBYBY/create_jd.txt
+     list_installed2=$(opkg list-installed | grep chattr)
+     if  grep -q chattr $list_installed2 ; then
+       echo -e "${Info} 已安装chattr,继续...";
+       chattr +i $ADBYBY/data/lazy.txt
+       chattr +i $ADBYBY/data/video.txt
+	  else
+       echo -e "${Info} 未安装chattr,开始安装..."
+       opkg update && opkg install chattr   #可增加判断机制
+       chattr +i $ADBYBY/data/lazy.txt
+       chattr +i $ADBYBY/data/video.txt
+	 fi 
     echo -e "${Info} 更改成功"
 }
 re_rule_server(){
     sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
+    echo "" > $ADBYBY/create_jd.txt
+    echo "NO" >> $ADBYBY/create_jd.txt
+    chattr -i $ADBYBY/data/lazy.txt
+    chattr -i $ADBYBY/data/video.txt
+    opkg remove chattr
     echo -e "${Info} 更改成功"
 }
 cat_lazy(){
@@ -273,6 +292,12 @@ cat_video(){
     video_time=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
     echo -e "${Info} $video_time"
 }
+
+#创建判断文件
+if [ ! -e "$ADBYBY/create_jd.txt" ]; then
+   touch $ADBYBY/create_jd.txt
+   echo "NO" >> $ADBYBY/create_jd.txt
+fi
 #主菜单
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
