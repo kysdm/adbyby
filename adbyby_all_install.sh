@@ -10,9 +10,12 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
+<<<<<<< HEAD
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
+=======
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
 sh_ver="1.0.8"
 
 Download_adupdate(){
@@ -231,12 +234,22 @@ x64(){
     opkg install $luci/adbyby_2.7-7.0_x64.ipk
 }
 adbyby_uninstall(){
+<<<<<<< HEAD
    if  grep -q adbyby /tmp/installed.txt ; then
      opkg remove adbyby
      echo -e "${Info} 卸载成功"
    else
      echo -e "${Error} 未安装ADBYBY"
    fi 
+=======
+    list_installed=$(opkg list-installed | grep adbyby)
+    if  grep -q adbyby $list_installed ; then
+      opkg remove adbyby
+      echo -e "${Info} 卸载成功";
+	 else
+      echo -e "${Error} 未安装ADBYBY"
+	fi 
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
 }
 #其他功能 
 other(){
@@ -262,8 +275,15 @@ other(){
 }
 kill_rule_server(){
     sed -i 's/video,lazya/none/g' $ADBYBY/adhook.ini
+<<<<<<< HEAD
     echo "YES" > $ADBYBY/create_jd.txt
      if  grep -q chattr /tmp/installed.txt ; then
+=======
+    echo "" > $ADBYBY/create_jd.txt
+    echo "YES" >> $ADBYBY/create_jd.txt
+     list_installed2=$(opkg list-installed | grep chattr)
+     if  grep -q chattr $list_installed2 ; then
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
        echo -e "${Info} 已安装chattr,继续...";
        chattr +i $ADBYBY/data/lazy.txt
        chattr +i $ADBYBY/data/video.txt
@@ -277,7 +297,12 @@ kill_rule_server(){
 }
 re_rule_server(){
     sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
+<<<<<<< HEAD
     echo "NO" > $ADBYBY/create_jd.txt
+=======
+    echo "" > $ADBYBY/create_jd.txt
+    echo "NO" >> $ADBYBY/create_jd.txt
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
     chattr -i $ADBYBY/data/lazy.txt
     chattr -i $ADBYBY/data/video.txt
     opkg remove chattr
@@ -295,7 +320,11 @@ cat_video(){
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
+<<<<<<< HEAD
    echo "NO" > $ADBYBY/create_jd.txt
+=======
+   echo "NO" >> $ADBYBY/create_jd.txt
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
 fi
 #主菜单
 echo && echo -e "

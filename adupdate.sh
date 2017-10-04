@@ -2,8 +2,13 @@
 #kysdm(gxk7231@gmail.com)
 export ADBYBY=/usr/share/adbyby
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
+<<<<<<< HEAD
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 sh_ver="1.0.3"
+=======
+
+sh_ver="1.0.2"
+>>>>>>> 1dbf7a0f735fb61389779340386355b582b3c90d
 
 #规则地址
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"  #官方github地址
