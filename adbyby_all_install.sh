@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.0.9"
+sh_ver="1.1.0"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -350,7 +350,7 @@ ${Font_color_suffix}————————————
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本 待做
+  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本
   ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
   ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
