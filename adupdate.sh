@@ -9,11 +9,6 @@ rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
 video_version=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
 
-#创建判断文件
-if [ ! -e "$ADBYBY/create_jd.txt" ]; then
-   touch $ADBYBY/create_jd.txt
-   echo "NO" > $ADBYBY/create_jd.txt
-fi
 #判断更新
 lazy_video_update(){
   echo_date "本地lazy规则时间 [$lazy_version] ,本地video规则时间 [$video_version] " 
@@ -126,6 +121,11 @@ video_update(){
     echo_date "$separated脚本结束运行$separated" 
    fi
 }
+#创建判断文件
+if [ ! -e "$ADBYBY/create_jd.txt" ]; then
+   touch $ADBYBY/create_jd.txt
+   echo "NO" > $ADBYBY/create_jd.txt
+fi
 #下载规则文件
  echo_date "$separated脚本开始运行$separated"
  echo_date 下载规则文件中...
