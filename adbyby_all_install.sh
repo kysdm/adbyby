@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.2"
+sh_ver="1.1.4"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -119,6 +119,7 @@ auto_adupdate_install(){
     esac
 }
 auto_adupdate1_install(){
+    sed -i '/adbyby/d' $crontab  #防止有两条相同计划任务在系统中
 	if  grep -q adupdate $cron ; then
 	   plan_the_task_line=$(grep -n "$ADBYBY/adupdate.sh" $cron  | awk '{print $1}' | sed 's/://g')
 	   rod=`expr $plan_the_task_line - 4`
@@ -150,7 +151,7 @@ auto_adupdate2_install(){
 }
 auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
-    echo -e "${Info} 请手动添加计划任务到系统中，命令如下"
+    echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
 	echo -e "${Info} '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'"
 }
 auto_adupdate4_install(){
@@ -207,7 +208,6 @@ auto_adupdate4_uninstall(){
     /etc/init.d/cron restart 
     echo -e "${Info} 删除成功"
 }
-
 adbyby_install(){
     echo && echo -e "
 ————————————
@@ -291,8 +291,9 @@ adbyby_uninstall(){
 other(){
        echo && echo -e "
 ————————————
+  ${Tip} 需要有足够的空间,8M闪存的可以放弃了
   ${Green_font_prefix}1.${Font_color_suffix} 关闭获取主服务器规则(只获取GitHub上的规则)
-  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)[需要有空间安装chattr,8M闪存的可以放弃了]
+  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
   ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
@@ -329,7 +330,7 @@ re_rule_server(){
     echo "NO" > $ADBYBY/create_jd.txt
     chattr -i $ADBYBY/data/lazy.txt
     chattr -i $ADBYBY/data/video.txt
-    opkg remove chattr
+    opkg remove chattr                          #可增加选项决定是否删除
     echo -e "${Info} 更改成功"
 }
 cat_lazy(){
@@ -349,13 +350,13 @@ fi
 #主菜单
 echo && echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
- ${Green_font_prefix} 适用于pandorabox openwrt LEDE 固件 
+  适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
   ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-  ${Green_font_prefix}4.${Font_color_suffix} 更新规则辅助更新脚本
+  ${Green_font_prefix}4.${Font_color_suffix} 升级规则辅助更新脚本
   ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
   ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
@@ -369,7 +370,8 @@ ${Font_color_suffix}————————————
  ${Green_font_prefix}12.${Font_color_suffix} 其他功能 
  ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
-————————————" && echo
+————————————
+ $Tip 有BUG请群里私聊我 " && echo
 read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
 	1) adbyby_install;;
