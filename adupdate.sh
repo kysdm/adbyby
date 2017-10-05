@@ -4,7 +4,7 @@ alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.0.8"
+sh_ver="1.0.9"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
 video_version=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
@@ -17,7 +17,7 @@ fi
 #判断更新
 lazy_video_update(){
   echo_date "本地lazy规则时间 [$lazy_version] ,本地video规则时间 [$video_version] " 
-  echo_date "线上video规则时间 [$video_versiony_new] ,线上video规则时间 [$video_versiony_new] " 
+  echo_date "线上lazy规则时间 [$lazy_versiony_new] ,线上video规则时间 [$video_versiony_new] " 
    if [[ "$lazy_versiony_new" != "$lazy_version" ]] && [[ "$video_versiony_new" != "$video_versiony" ]]; then  #lazy video 都有更新
     if [ "$judgment"x == "YES"x ]; then
         echo_date 检测到lazy与video规则有更新，应用规则中...
