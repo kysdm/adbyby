@@ -3,7 +3,7 @@
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
-sh_ver="1.0.5"
+sh_ver="1.0.6"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
 video_version=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
@@ -130,11 +130,11 @@ video_update(){
  echo_date 脚本开始运行
  echo_date 下载规则文件中...
 #下载lazy
-  wget -t3 -T10 --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
+  wget --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
   lazy_result=$?
   lazy_versiony_new=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3,$4}')
 #下载video
-  wget -t3 -T10 --no-check-certificate -O /tmp/video.txt $rules/video.txt
+  wget --no-check-certificate -O /tmp/video.txt $rules/video.txt
   video_result=$?
   video_versiony_new=$(sed -n '1p' /tmp/video.txt | awk -F' ' '{print $3,$4}')
 #判断文件是否下载成功
