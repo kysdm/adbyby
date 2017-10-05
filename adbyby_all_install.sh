@@ -295,8 +295,8 @@ other(){
        echo && echo -e "
 ————————————
   ${Tip} 需要有足够的空间,8M闪存的可以放弃了
-  ${Green_font_prefix}1.${Font_color_suffix} 关闭获取主服务器规则(只获取GitHub上的规则)
-  ${Green_font_prefix}2.${Font_color_suffix} 开启获取主服务器规则(如成功获取直接使用主服务器规则.忽略GitHub上的规则)
+  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规则
+  ${Green_font_prefix}2.${Font_color_suffix} 同时获取主服务器和GitHub规则(如成功获取直接使用主服务器规则.则忽略GitHub上的规则)
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
   ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
@@ -345,17 +345,24 @@ cat_video(){
     echo -e "${Info} $video_time"
 }
 menu_adbyby(){
-	if [[ -e $ADBYBY ]]; then
+	if [ -e $ADBYBY ]; then
 		check_adbyby_pid
-		if [[ ! -z "${PID}" ]]; then
-			echo -e " ${Green_font_prefix}已安装adbyby${Font_color_suffix} 并 ${Green_font_prefix}已启动${Font_color_suffix}"
+		if [ ! -z "${PID}" ]; then
+			echo -e " [ 已安装adbyby并已启动 ]"
 		else
-			echo -e " ${Green_font_prefix}已安装adbyby${Font_color_suffix} 但 ${Red_font_prefix}未启动${Font_color_suffix}"
+			echo -e " [ 已安装adbyby但未启动 ]"
 		fi
 		cd "${ssr_folder}"
 	else
-		echo -e " ${Red_font_prefix}未安装adbyby${Font_color_suffix}"
+		echo -e " [ 未安装adbyby ]"
 	fi
+}
+menu_adupdate(){
+    if [ -f "$ADBYBY/adupdate.sh" ]; then
+        echo -e " [ 已下载规则辅助更新脚本 ]"
+    else
+        echo -e " [ 未下载规则辅助更新脚本 ]"
+    fi    
 }
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
@@ -366,7 +373,7 @@ fi
  echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   适用于pandorabox openwrt LEDE 固件 
-${Font_color_suffix}————————————
+————————————
   ${Green_font_prefix}1.${Font_color_suffix} 安装LCUI_ADBYBY程序
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
@@ -389,6 +396,7 @@ ${Font_color_suffix}————————————
  $Tip 有BUG请群里私聊我 " && echo
   echo -e " 安装情况如下:" 
   menu_adbyby
+  menu_adupdate
   echo && read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
 	1) adbyby_install;;
