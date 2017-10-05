@@ -3,6 +3,7 @@
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
+separated="—————————————————————"
 sh_ver="1.0.7"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
@@ -25,14 +26,14 @@ lazy_video_update(){
         chattr +i $ADBYBY/data/lazy.txt $ADBYBY/data/video.txt                                                #加锁
         /etc/init.d/adbyby restart                                                                            #重启进程
         rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	  echo_date 脚本结束运行
+    	  echo_date "$separated脚本结束运行$separated"
         exit 0
     else
        echo_date 检测到lazy与video规则有更新，应用规则中...
        cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt && cp -f /tmp/video.txt $ADBYBY/data/video.txt               #复制
        /etc/init.d/adbyby restart                                                                             #重启进程
        rm -f /tmp/lazy.txt /tmp/video.txt                                                                     #删除缓存
-    	 echo_date 脚本结束运行
+    	 echo_date "$separated脚本结束运行$separated"
        exit 0
     fi
    elif [ "$lazy_versiony_new" != "$lazy_version" ]; then                                                      #只有lazy有更新
@@ -43,14 +44,14 @@ lazy_video_update(){
         chattr +i $ADBYBY/data/lazy.txt                                                                       #加锁
         /etc/init.d/adbyby restart                                                                            #重启进程
         rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	  echo_date 脚本结束运行
+    	  echo_date "$separated脚本结束运行$separated"
         exit 0
     else
         echo_date 检测到lazy规则有更新，应用规则中...
         cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt                                                             #复制
         /etc/init.d/adbyby restart                                                                            #重启进程
         rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	  echo_date 脚本结束运行
+    	  echo_date "$separated脚本结束运行$separated"
         exit 0
     fi   
    elif [ "$video_versiony_new" != "$video_versiony" ]; then                                                  #只有video有更新
@@ -61,14 +62,14 @@ lazy_video_update(){
         chattr +i $ADBYBY/data/video.txt                                                                       #加锁
         /etc/init.d/adbyby restart                                                                            #重启进程
         rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	  echo_date 脚本结束运行
+    	  echo_date "$separated脚本结束运行$separated"
         exit 0
     else
         echo_date 检测到video规则有更新，应用规则中...
         cp -f /tmp/video.txt $ADBYBY/data/video.txt                                                                #复制
         /etc/init.d/adbyby restart                                                                            #重启进程
         rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	  echo_date 脚本结束运行
+    	  echo_date "$separated脚本结束运行$separated"
         exit 0
        fi 
    fi
@@ -84,19 +85,19 @@ lazy_update(){
        chattr +i $ADBYBY/data/lazy.txt                                       #加锁
        /etc/init.d/adbyby restart                                                                            #重启进程
        rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	 echo_date 脚本结束运行
+    	 echo_date "$separated脚本结束运行$separated"
        exit 0   
     else
        echo_date 检测到lazy规则有更新，应用规则中...
        cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt           #复制
        /etc/init.d/adbyby restart                                                                            #重启进程
        rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	 echo_date 脚本结束运行
+    	 echo_date "$separated脚本结束运行$separated"
        exit 0  
     fi
    else
     echo_date "lazy规则无更新,video规则因下载失败无法检测更新" 
-    echo_date 脚本结束运行
+    echo_date "$separated脚本结束运行$separated"
    fi
 }
 video_update(){
@@ -110,24 +111,23 @@ video_update(){
        chattr +i $ADBYBY/data/video.txt                                       #加锁
        /etc/init.d/adbyby restart                                                                            #重启进程
        rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	 echo_date 脚本结束运行
+    	 echo_date "$separated脚本结束运行$separated"
        exit 0   
     else
        echo_date 检测到video规则有更新，应用规则中...
        cp -f /tmp/video.txt $ADBYBY/data/video.txt           #复制
        /etc/init.d/adbyby restart                                                                            #重启进程
        rm -f /tmp/lazy.txt /tmp/video.txt                                                                    #删除缓存
-    	 echo_date 脚本结束运行
+    	 echo_date "$separated脚本结束运行$separated"
        exit 0  
     fi
    else
     echo_date "video规则无更新,lazy规则因下载失败无法检测更新"
-    echo_date 脚本结束运行 
+    echo_date "$separated脚本结束运行$separated" 
    fi
 }
 #下载规则文件
- echo_date -----------------------------------------------
- echo_date 脚本开始运行
+ echo_date "$separated脚本开始运行$separated"
  echo_date 下载规则文件中...
 #下载lazy
   wget --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
