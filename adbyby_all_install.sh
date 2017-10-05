@@ -16,6 +16,9 @@ opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
 sh_ver="1.1.4"
 
+check_adbyby_pid(){
+	PID=`ps |grep -v grep | grep adbyby |awk '{print $1}'`
+}
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
     chmod 777 $ADBYBY/adupdate.sh
@@ -341,14 +344,26 @@ cat_video(){
     video_time=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
     echo -e "${Info} $video_time"
 }
-
+menu_adbyby(){
+	if [[ -e $ADBYBY ]]; then
+		check_adbyby_pid
+		if [[ ! -z "${PID}" ]]; then
+			echo -e " ${Green_font_prefix}已安装adbyby${Font_color_suffix} 并 ${Green_font_prefix}已启动${Font_color_suffix}"
+		else
+			echo -e " ${Green_font_prefix}已安装adbyby${Font_color_suffix} 但 ${Red_font_prefix}未启动${Font_color_suffix}"
+		fi
+		cd "${ssr_folder}"
+	else
+		echo -e " ${Red_font_prefix}未安装adbyby${Font_color_suffix}"
+	fi
+}
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
    echo "NO" > $ADBYBY/create_jd.txt
 fi
 #主菜单
-echo && echo -e "
+ echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   适用于pandorabox openwrt LEDE 固件 
 ${Font_color_suffix}————————————
@@ -372,7 +387,9 @@ ${Font_color_suffix}————————————
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
 ————————————
  $Tip 有BUG请群里私聊我 " && echo
-read -p "现在选择顶部选项 [1-14]: " input
+  echo -e " 安装情况如下:" 
+  menu_adbyby
+  echo && read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
 	1) adbyby_install;;
 	2) adbyby_uninstall;;
