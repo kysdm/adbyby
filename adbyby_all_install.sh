@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.4"
+sh_ver="1.1.5"
 
 check_adbyby_pid(){
 	PID=`ps |grep -v grep | grep adbyby |awk '{print $1}'`
