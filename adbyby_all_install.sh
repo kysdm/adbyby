@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.5"
+sh_ver="1.1.6"
 
 check_adbyby_pid(){
 	PID=`ps |grep -v grep | grep adbyby |awk '{print $1}'`
@@ -132,7 +132,7 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
+       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	 else
@@ -141,25 +141,25 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
+       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	fi 
 }
 auto_adupdate2_install(){
 	sed -i '/adbyby/d' $crontab
-    echo '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
+    echo '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
 auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
-	echo -e "${Info} '30 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'"
+	echo -e "${Info} '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'"
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
-    echo '30 */6 * * * /etc/init.d/adbyby restart 2>&1' >> $crontab
+    echo '0 */6 * * * /etc/init.d/adbyby restart 2>&1' >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
@@ -364,6 +364,21 @@ menu_adupdate(){
         echo -e " [ 未下载规则辅助更新脚本 ]"
     fi    
 }
+menu_auto_adupdate(){
+    if [ -e "$cron" ]; then
+      if  grep -q "adupdate" "$cron" || grep -q "adupdate" "$crontab"; then
+        echo -e " [ 已启动自动更新规则功能 ]"
+     else
+         echo -e " [ 未启动自动更新规则功能 ]"
+      fi 
+    else
+      if  grep -q "adupdate" "$crontab"; then
+         echo -e " [ 已启动自动更新规则功能 ]"  
+      else
+         echo -e " [ 未启动自动更新规则功能 ]"
+      fi  
+    fi
+}
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
@@ -397,6 +412,7 @@ fi
   echo -e " 安装情况如下:" 
   menu_adbyby
   menu_adupdate
+  menu_auto_adupdate
   echo && read -p "现在选择顶部选项 [1-14]: " input
 case $input in 
 	1) adbyby_install;;
