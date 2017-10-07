@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.8"
+sh_ver="1.1.9"
 
 check_adbyby_pid(){
 	PID=`ps |grep -v grep | grep adbyby |awk '{print $1}'`
@@ -119,7 +119,7 @@ auto_adupdate_install(){
 ————————————" && echo
     read -p " 现在选择顶部选项 [1-6]: " input
     case $input in 
-     1）auto_adupdate_auto_install;;
+     1) auto_adupdate_auto_install;;
 	 2) auto_adupdate4_install;;
 	 3) auto_adupdate1_install;;
 	 4) auto_adupdate2_install;;
