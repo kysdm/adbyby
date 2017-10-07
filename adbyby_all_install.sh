@@ -14,11 +14,8 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.1.9"
+sh_ver="1.2.0"
 
-check_adbyby_pid(){
-	PID=`ps |grep -v grep | grep adbyby |awk '{print $1}'`
-}
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
      if [ "$?" == "0" ]; then
@@ -386,20 +383,19 @@ cat_video(){
     echo -e "${Info} $video_time"
 }
 menu_adbyby(){
-	if [ -e $ADBYBY ]; then
-		check_adbyby_pid
-		if [ ! -z "${PID}" ]; then
+	 if [ -e $ADBYBY/adbyby ]; then
+		pid=`ps |grep -v 'grep\|all' | grep adbyby |awk '{print $1}'`
+		if [ ! -z "${pid}" ]; then
 			echo -e " [ 已安装adbyby并已启动 ]"
 		else
 			echo -e " [ 已安装adbyby但未启动 ]"
 		fi
-		cd "${ssr_folder}"
-	else
-		echo -e " [ 未安装adbyby ]"
-	fi
+	 else
+	 	echo -e " [ 未安装adbyby ]"
+	 fi
 }
 menu_adupdate(){
-    if [ -f "$ADBYBY/adupdate.sh" ]; then
+    if [ -e "$ADBYBY/adupdate.sh" ]; then
         echo -e " [ 已下载规则辅助更新脚本 ]"
     else
         echo -e " [ 未下载规则辅助更新脚本 ]"
