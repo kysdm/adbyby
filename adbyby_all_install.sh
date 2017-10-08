@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.2"
+sh_ver="1.2.3"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -326,19 +326,18 @@ other(){
 echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规则
   ${Green_font_prefix}2.${Font_color_suffix} 同时获取主服务器和GitHub规则(如成功获取直接使用主服务器规则.则忽略GitHub上的规则)
 ————————————
-  ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
-  ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
+  ${Green_font_prefix}3.${Font_color_suffix} 查看当前规则时间
 ———————————— 
-  ${Green_font_prefix}5.${Font_color_suffix} 退出
+  ${Green_font_prefix}4.${Font_color_suffix} 退出
 ————————————"
-    read -p " 现在选择顶部选项 [1-5]: " input
+    read -p " 现在选择顶部选项 [1-4]: " input
     case $input in 
 	 1) kill_rule;;
 	 2) re_rule_server;;
-     3) cat_lazy;;
-	 4) cat_video;;
-	 5) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-5]" && exit 1;;
+     3) cat_lazy
+	    cat_video;;
+	 4) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
     esac 
 }
 menu_kill_rule(){
@@ -410,11 +409,11 @@ re_rule_server(){
 }
 cat_lazy(){
     lazy_time=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
-    echo -e "${Info} $lazy_time"
+    echo -e "lazy : $lazy_time"
 }
 cat_video(){
     video_time=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
-    echo -e "${Info} $video_time"
+    echo -e "video: $video_time"
 }
 menu_adbyby(){
 	 if [ -e $ADBYBY/adbyby ]; then

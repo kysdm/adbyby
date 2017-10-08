@@ -8,7 +8,7 @@
 
 创建相关文件夹（如已经安装adbyby可跳过）
 
-    mkdir  /usr/share/adbyby
+    mkdir /usr/share/adbyby
 
 下载脚本:
 
