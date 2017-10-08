@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.0"
+sh_ver="1.2.2"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -127,14 +127,14 @@ auto_adupdate_install(){
     esac
 }
 auto_adupdate_auto_install(){
-    if [ ! -e "$cron" ]; then
+    if [ -e "$cron" ]; then
      if  grep -q pandorabox /etc/banner ; then
-       auto_adupdate1_install
+        auto_adupdate1_install
      else
-       auto_adupdate3_install    
+        auto_adupdate3_install    
      fi
     else
-       auto_adupdate4_install
+        auto_adupdate4_install
     fi  
 }
 auto_adupdate1_install(){
@@ -175,7 +175,7 @@ auto_adupdate3_install(){
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
-    echo '0 */6 * * * /etc/init.d/adbyby restart 2>&1' >> $crontab
+    echo '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
@@ -247,7 +247,7 @@ adbyby_install(){
   ${Green_font_prefix}3.${Font_color_suffix} 安装armv7版
   ${Green_font_prefix}4.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版
   ${Green_font_prefix}5.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
-  ${Green_font_prefix}6.${Font_color_suffix} 安装最新 pandorabox专用版(2016.10之后的固件)
+  ${Green_font_prefix}6.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版(2016.10之后的固件)
   ${Green_font_prefix}7.${Font_color_suffix} 安装7620A（N)和7621 pandorabox小闪存专用版(每次开机时下载主程序到内存中运行)
   ${Green_font_prefix}8.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件)(每次开机时下载主程序到内存中运行)
   ${Green_font_prefix}9.${Font_color_suffix} 安装X86版
@@ -320,20 +320,20 @@ adbyby_uninstall(){
 }
 #其他功能 
 other(){
-       echo && echo -e "
-————————————
-  ${Tip} 需要有足够的空间,8M闪存的可以放弃了
-  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规则
+  echo -e "
+————————————"
+  menu_kill_rule
+echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规则
   ${Green_font_prefix}2.${Font_color_suffix} 同时获取主服务器和GitHub规则(如成功获取直接使用主服务器规则.则忽略GitHub上的规则)
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 查看当前lazy规则时间
   ${Green_font_prefix}4.${Font_color_suffix} 查看当前video规则时间
 ———————————— 
   ${Green_font_prefix}5.${Font_color_suffix} 退出
-————————————" && echo
+————————————"
     read -p " 现在选择顶部选项 [1-5]: " input
     case $input in 
-	 1) kill_rule_server;;
+	 1) kill_rule;;
 	 2) re_rule_server;;
      3) cat_lazy;;
 	 4) cat_video;;
@@ -341,6 +341,36 @@ other(){
 	 *) echo -e "${Error} 请输入正确的数字 [1-5]" && exit 1;;
     esac 
 }
+menu_kill_rule(){
+    if  grep -q YES $ADBYBY/create_jd.txt ; then
+    echo -e "  ${Info} 当前使用GitHub规则"
+    else
+    echo -e "  ${Info} 当前使用主服务器规则"
+    fi
+}
+kill_rule(){
+       echo && echo -e "   
+———————————— 
+  ${Green_font_prefix}1.${Font_color_suffix} 方案一：需要有足够的空间,且系统分区格式要为ext2,3,4，通常硬路由分区都不使用这种格式
+  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名，将导致所有连接到路由的设备无法更新规则，也可能导致某些视频站无法屏蔽
+  ${Green_font_prefix}3.${Font_color_suffix} 退出
+————————————" && echo  
+    read -p " 现在选择顶部选项 [1-3]: " input
+    case $input in 
+	 1) kill_rule_server;;
+	 2) kill_rule_domain;;
+	 3) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-3]" && exit 1;;
+    esac 
+}
+kill_rule_domain(){
+    sed -i '/update.adbyby.com/d' /etc/hosts
+    echo "0.0.0.0 update.adbyby.com" >> /etc/hosts
+    /etc/init.d/dnsmasq restart
+    echo "YES2" > $ADBYBY/create_jd.txt
+    echo -e "${Info} 更改成功"
+}
+
 kill_rule_server(){
     sed -i 's/video,lazya/none/g' $ADBYBY/adhook.ini
     echo "YES" > $ADBYBY/create_jd.txt
@@ -357,6 +387,8 @@ kill_rule_server(){
     echo -e "${Info} 更改成功"
 }
 re_rule_server(){
+    sed -i '/update.adbyby.com/d' /etc/hosts
+    /etc/init.d/dnsmasq restart
     sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
     echo "NO" > $ADBYBY/create_jd.txt
     chattr -i $ADBYBY/data/lazy.txt
@@ -365,7 +397,9 @@ re_rule_server(){
 		[[ -z "${yn}" ]] && yn="n"
         case $yn in 
          y|Y) 
-         opkg remove chattr
+         opkg remove chattr 
+         opkg remove e2fsprogs
+         opkg remove libext2fs
          echo -e "${Info} 已移除chattr插件并更改成功" 
          exit 0
          ;;
