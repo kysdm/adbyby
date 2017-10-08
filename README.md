@@ -6,11 +6,15 @@
 
     opkg update && opkg install wget
 
+创建相关文件夹（如已经安装adbyby可跳过）
+
+    mkdir  /usr/share/adbyby
+
 下载脚本:
 
     wget --no-check-certificate -O /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
 
-赋予可执行权限:    
+赋予可执行权限:
 
     chmod 777 /usr/share/adbyby/adbyby_all_install.sh
 
