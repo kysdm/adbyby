@@ -1,6 +1,7 @@
 # adbyby 路由版 一键安装管理脚本
 
 适用于pandorabox openwrt LEDE 固件
+请用Xshell 5连接你的路由，Putty对中文支持不好
 
 安装wget:
 
