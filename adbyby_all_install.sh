@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.3"
+sh_ver="1.2.4"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -351,7 +351,7 @@ kill_rule(){
        echo && echo -e "   
 ———————————— 
   ${Green_font_prefix}1.${Font_color_suffix} 方案一：需要有足够的空间,且系统分区格式要为ext2,3,4，通常硬路由分区都不使用这种格式
-  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名，将导致所有连接到路由的设备无法更新规则，也可能导致某些视频站无法屏蔽
+  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名，将导致所有连接到路由的设备无法更新规则,当主服务器发生错误时也可用此方法
   ${Green_font_prefix}3.${Font_color_suffix} 退出
 ————————————" && echo  
     read -p " 现在选择顶部选项 [1-3]: " input
@@ -478,7 +478,7 @@ fi
  ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
 ————————————
- $Tip 有BUG请群里私聊我 " && echo
+ $Tip 有BUG请群里私聊我,现主服务器出错,请用其他功能中屏蔽掉主服务器 " && echo
   echo -e " 安装情况如下:" 
   menu_adbyby
   menu_adupdate
