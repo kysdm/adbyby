@@ -4,11 +4,6 @@ export config=/etc/config
 crontab=/etc/crontabs/root
 cron=/etc/config/cron
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
-
-#安装必要插件
-#opkg update
-#opkg install wget
-
 until  
         echo "1.下载脚本(大前提!!!)"
         echo "2.添加自动更新规则，web计划任务界面为可视化操控界面(新版pandorabox固件)"  
