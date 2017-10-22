@@ -4,7 +4,7 @@ alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.1.0"
+sh_ver="1.1.1"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
 video_version=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
@@ -43,6 +43,12 @@ video_update(){
     echo_date "video规则无更新"
    fi
 }
+clear_cache(){
+   rm -f /tmp/lazy.txt /tmp/video.txt /tmp/installed.txt
+}
+restart_ad(){
+  /etc/init.d/adbyby restart >/dev/null 2>&1
+}
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
@@ -64,27 +70,27 @@ fi
     echo_date lazy与video规则文件都下载成功,判断是否有更新...
     lazy_update
     video_update
-    rm -f /tmp/lazy.txt /tmp/video.txt
-    /etc/init.d/adbyby restart
+    clear_cache
+    restart_ad
     echo_date "$separated脚本结束运行$separated"
     exit 0
  elif [[ "$lazy_result"x != "0"x ]] && [[ "$video_result"x != "0"x ]]; then   #两个都下载失败执行下行命令
     echo_date lazy与video规则文件都下载失败,请检查网络!
-    rm -f /tmp/lazy.txt /tmp/video.txt
+    clear_cache
     echo_date "$separated脚本结束运行$separated"
     exit 1
  elif [ "$lazy_result"x == "0"x ]; then                                       #只有lazy下载成功执行下行命令
     echo_date 只有lazy规则文件下载成功，判断是否有更新...
     lazy_update
-    rm -f /tmp/lazy.txt /tmp/video.txt
-    /etc/init.d/adbyby restart
+    clear_cache
+    restart_ad
     echo_date "$separated脚本结束运行$separated"
     exit 0  
  elif [ "$video_result"x == "0"x ]; then                                      #只有video下载成功执行下行命令     
     echo_date 只有video规则文件下载成功，判断是否有更新...
     video_update
-    rm -f /tmp/lazy.txt /tmp/video.txt
-    /etc/init.d/adbyby restart
+    clear_cache
+    restart_ad
     echo_date "$separated脚本结束运行$separated"
     exit 0  
  fi  
