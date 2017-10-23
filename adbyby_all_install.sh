@@ -18,7 +18,7 @@ sh_ver="1.2.5"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
-     if [ "$?" == "0" ]; then
+     if [ "$?"x == "0"x ]; then
       chmod 777 $ADBYBY/adupdate.sh
       echo -e "${Info} 下载成功"  
      else
@@ -329,8 +329,8 @@ other(){
   echo -e "
 ————————————"
   menu_kill_rule
-echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规则
-  ${Green_font_prefix}2.${Font_color_suffix} 同时获取主服务器和GitHub规则(如成功获取直接使用主服务器规则.则忽略GitHub上的规则)
+echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或hiboy服务器上的规则为主
+  ${Green_font_prefix}2.${Font_color_suffix} 以adbyby官方服务器为主
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 查看当前规则时间
 ———————————— 
@@ -348,16 +348,16 @@ echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 只获取GitHub上的规�
 }
 menu_kill_rule(){
     if  grep -q YES $ADBYBY/create_jd.txt ; then
-    echo -e "  ${Info} 当前使用GitHub规则"
+    echo -e "  ${Info} 当前使用GitHub或hiboy服务器上的规则"
     else
-    echo -e "  ${Info} 当前使用主服务器规则"
+    echo -e "  ${Info} 当前使用adbyby官方服务器规则"
     fi
 }
 kill_rule(){
        echo && echo -e "   
 ———————————— 
   ${Green_font_prefix}1.${Font_color_suffix} 方案一：需要有足够的空间,且系统分区格式要为ext2,3,4，通常硬路由分区都不使用这种格式
-  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名，将导致所有连接到路由的设备无法更新规则,当主服务器发生错误时也可用此方法
+  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名,当主服务器发生错误时也可用此方法
   ${Green_font_prefix}3.${Font_color_suffix} 退出
 ————————————" && echo  
     read -p " 现在选择顶部选项 [1-3]: " input
@@ -484,7 +484,7 @@ fi
  ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 
  ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
 ————————————
- $Tip 有BUG请群里私聊我,现主服务器出错,请用其他功能中屏蔽掉主服务器 " && echo
+ $Tip 有BUG请群里私聊我,现主服务器有防火墙直接下载规则会报错,请用(12)其他功能中屏蔽掉主服务器!!! " && echo
   echo -e " 安装情况如下:" 
   menu_adbyby
   menu_adupdate
