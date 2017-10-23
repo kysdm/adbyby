@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.5"
+sh_ver="1.2.6"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
