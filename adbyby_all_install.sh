@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.6"
+sh_ver="1.2.7"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -242,7 +242,7 @@ auto_adupdate3_uninstall(){
 adbyby_install(){
     echo && echo -e "
 ————————————
-  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件，如明确自己的固件建议使用下列选项
+  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件推荐使用)
   ${Green_font_prefix}2.${Font_color_suffix} 安装ar71xx版
   ${Green_font_prefix}3.${Font_color_suffix} 安装arm版
   ${Green_font_prefix}4.${Font_color_suffix} 安装armv7版
