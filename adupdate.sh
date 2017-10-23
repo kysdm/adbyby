@@ -4,8 +4,9 @@ alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.1.1"
+sh_ver="1.1.2"
 rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
+hiboy_rules="http://opt.cn2qq.com/opt-file"
 lazy_version=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
 video_version=$(sed -n '1p' $ADBYBY/data/video.txt | awk -F' ' '{print $3,$4}')
 
@@ -59,11 +60,21 @@ fi
  echo_date 下载规则文件中...
 #下载lazy
   wget --no-check-certificate -O /tmp/lazy.txt $rules/lazy.txt
-  lazy_result=$?
+     if [ "$?"x != "0"x ]; then
+      echo_date "【lazy】下载Github规则失败，尝试下载hiboy服务器中的规则"
+      wget -O /tmp/lazy.txt $hiboy_rules/lazy.txt && lazy_result="$?"
+     else
+      lazy_result="0"
+     fi  
   lazy_versiony_new=$(sed -n '1p' /tmp/lazy.txt | awk -F' ' '{print $3,$4}')
 #下载video
   wget --no-check-certificate -O /tmp/video.txt $rules/video.txt
-  video_result=$?
+     if [ "$?"x != "0"x ]; then
+      echo_date "【video】下载Github规则失败，尝试下载hiboy服务器中的规则"
+      wget -O /tmp/video.txt $hiboy_rules/video.txt && video_result="$?"
+     else
+      video_result="0"
+     fi  
   video_versiony_new=$(sed -n '1p' /tmp/video.txt | awk -F' ' '{print $3,$4}')
 #判断文件是否下载成功
  if [[ "$lazy_result"x == "0"x ]] && [[ "$video_result"x == "0"x ]]; then   #两个都下载成功执行下行命令
