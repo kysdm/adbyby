@@ -16,10 +16,6 @@
 
     wget --no-check-certificate -O /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
 
-赋予可执行权限:
-
-    chmod 777 /usr/share/adbyby/adbyby_all_install.sh
-
 运行脚本:
 
     sh /usr/share/adbyby/adbyby_all_install.sh
