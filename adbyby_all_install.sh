@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.3.0"
+sh_ver="1.3.1"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -189,10 +189,6 @@ auto_adupdate4_install(){
     echo -e "${Info} 写入完成"
 }
 add_clearlog(){
-    sed -i '/每星期一1点清空日志/d' $crontab
-    echo '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'>> $crontab
-    /etc/init.d/cron restart
-    echo -e "${Info} 写入完成"
     if [ -e "$cron" ]; then
      if  grep -q pandorabox /etc/banner ; then
        	if  grep -q adbyby脚本日志清空 $cron ; then
