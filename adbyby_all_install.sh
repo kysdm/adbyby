@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.7"
+sh_ver="1.2.8"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -102,30 +102,39 @@ stop_adbyby(){
 }
 auto_adupdate_install(){
 	echo && echo -e "
-—————自动判断 测试功能
- ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动添加自动更新规则功能  
-—————未安装规则辅助更新脚本
- ${Green_font_prefix}2.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-—————已安装规则辅助更新脚本
- ${Green_font_prefix}3.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
- ${Green_font_prefix}4.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
- ${Green_font_prefix}5.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
 ————————————
- ${Green_font_prefix}6.${Font_color_suffix} 重启crontab进程
- ${Green_font_prefix}7.${Font_color_suffix} 退出
-————————————" && echo
-    read -p " 现在选择顶部选项 [1-6]: " input
+ ${Green_font_prefix}1.${Font_color_suffix} 添加自动更新规则功能  
+ ${Green_font_prefix}2.${Font_color_suffix} 添加定时清空日志功能
+————————————
+ ${Green_font_prefix}3.${Font_color_suffix} 重启crontab进程
+ ${Green_font_prefix}4.${Font_color_suffix} 退出
+————————————
+ $Tip 请先下载更新脚本，否则该功能不生效!!!" && echo
+    read -p " 现在选择顶部选项 [1-4]: " input
     case $input in 
      1) auto_adupdate_auto_install;;
-	 2) auto_adupdate4_install;;
-	 3) auto_adupdate1_install;;
-	 4) auto_adupdate2_install;;
-     5) auto_adupdate3_install;;
-	 6) restart_crontab;;
-	 7) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-6]" && exit 1;;
+     2) add_clearlog;;
+	 3) restart_crontab;;
+	 4) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
     esac
 }
+# —————自动判断 测试功能
+#  ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动添加自动更新规则功能  
+# —————未安装规则辅助更新脚本
+#  ${Green_font_prefix}2.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
+# —————已安装规则辅助更新脚本
+#  ${Green_font_prefix}3.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
+#  ${Green_font_prefix}4.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
+#  ${Green_font_prefix}5.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
+# ————————————
+#  ${Green_font_prefix}6.${Font_color_suffix} 添加定时清空日志功能
+#  ${Green_font_prefix}7.${Font_color_suffix} 重启crontab进程
+#  ${Green_font_prefix}8.${Font_color_suffix} 退出
+	#  2) auto_adupdate4_install;;
+	#  3) auto_adupdate1_install;;
+	#  4) auto_adupdate2_install;;
+    #  5) auto_adupdate3_install;;
 auto_adupdate_auto_install(){
     if [ -e "$cron" ]; then
      if  grep -q pandorabox /etc/banner ; then
@@ -139,7 +148,7 @@ auto_adupdate_auto_install(){
 }
 auto_adupdate1_install(){
     sed -i '/adbyby/d' $crontab  #防止有两条相同计划任务在系统中
-	if  grep -q adupdate $cron ; then
+	if  grep -q adbyby规则更新 $cron ; then
 	   plan_the_task_line=$(grep -n "$ADBYBY/adupdate.sh" $cron  | awk '{print $1}' | sed 's/://g')
 	   rod=`expr $plan_the_task_line - 4`
 	   sed -i "$rod,+4d" $cron
@@ -179,32 +188,117 @@ auto_adupdate4_install(){
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
+add_clearlog(){
+    sed -i '/每星期一1点清空日志/d' $crontab
+    echo '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'>> $crontab
+    /etc/init.d/cron restart
+    echo -e "${Info} 写入完成"
+    if [ -e "$cron" ]; then
+     if  grep -q pandorabox /etc/banner ; then
+       	if  grep -q adbyby脚本日志清空 $cron ; then
+	        plan_the_task_line=$(grep -n "每星期一1点清空日志" $cron  | awk '{print $1}' | sed 's/://g')
+	        rod=`expr $plan_the_task_line - 4`
+	        sed -i "$rod,+4d" $cron
+            echo "" >> $cron
+            echo "config task" >> $cron
+            echo "	option enabled '1'" >> $cron
+            echo "	option task_name 'adbyby脚本日志清空'" >> $cron
+            echo "	option custom '1'" >> $cron
+            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'" >> $cron
+            /etc/init.d/cron restart
+            echo -e "${Info} 写入完成";
+	    else
+            echo "" >> $cron
+            echo "config task" >> $cron
+            echo "	option enabled '1'" >> $cron
+            echo "	option task_name 'adbyby脚本日志清空'" >> $cron
+            echo "	option custom '1'" >> $cron
+            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'" >> $cron
+            /etc/init.d/cron restart
+            echo -e "${Info} 写入完成";
+	    fi 
+     else
+        echo -e "${Error} 因没有对应固件无法做支持"
+        echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
+	    echo -e "${Info} '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1'"
+     fi
+    else
+     sed -i '/每星期一1点清空日志/d' $crontab
+     echo '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'>> $crontab
+     /etc/init.d/cron restart
+     echo -e "${Info} 写入完成"
+    fi  
+}
 auto_adupdate_uninstall(){
 	echo && echo -e "
-—————自动判断 测试功能
- ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动移除自动更新规则功能   
-—————未安装规则辅助更新脚本启用自动更新规则功能的
- ${Green_font_prefix}2.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-—————已安装规则辅助更新脚本启用自动更新规则功能的
- ${Green_font_prefix}3.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
- ${Green_font_prefix}4.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
- ${Green_font_prefix}5.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
 ————————————
- ${Green_font_prefix}6.${Font_color_suffix} 重启crontab进程
- ${Green_font_prefix}7.${Font_color_suffix} 退出
+ ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动移除自动更新规则功能   
+ ${Green_font_prefix}2.${Font_color_suffix} 移除定时清空日志功能
+————————————
+ ${Green_font_prefix}3.${Font_color_suffix} 重启crontab进程
+ ${Green_font_prefix}4.${Font_color_suffix} 退出
 ———————————— 
  $Tip 仅限删除本脚本添加的计划任务 " && echo
-    read -p " 现在选择顶部选项 [1-7]: " input
+    read -p " 现在选择顶部选项 [1-4]: " input
     case $input in 
 	 1) auto_adupdate_auto_uninstall;;    
-	 2) auto_adupdate2_uninstall;;
-	 3) auto_adupdate1_uninstall;;
-	 4) auto_adupdate2_uninstall;;
-     5) auto_adupdate3_uninstall;;
-	 6) restart_crontab;;
-	 7) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-7]" && exit 1;;
+	 2) delete_clearlog;;
+	 3) restart_crontab;;
+	 4) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
     esac
+}
+# auto_adupdate_uninstall(){
+# 	echo && echo -e "
+# —————自动判断 测试功能
+#  ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动移除自动更新规则功能   
+# —————未安装规则辅助更新脚本启用自动更新规则功能的
+#  ${Green_font_prefix}2.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
+# —————已安装规则辅助更新脚本启用自动更新规则功能的
+#  ${Green_font_prefix}3.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
+#  ${Green_font_prefix}4.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
+#  ${Green_font_prefix}5.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
+# ————————————
+#  ${Green_font_prefix}6.${Font_color_suffix} 添加定时清空日志功能
+
+#  ${Green_font_prefix}7.${Font_color_suffix} 重启crontab进程
+#  ${Green_font_prefix}8.${Font_color_suffix} 退出
+# ———————————— 
+#  $Tip 仅限删除本脚本添加的计划任务 " && echo
+#     read -p " 现在选择顶部选项 [1-7]: " input
+#     case $input in 
+# 	 1) auto_adupdate_auto_uninstall;;    
+# 	 2) auto_adupdate2_uninstall;;
+# 	 3) auto_adupdate1_uninstall;;
+# 	 4) auto_adupdate2_uninstall;;
+#      5) auto_adupdate3_uninstall;;
+#      6) delete_clearlog;;
+# 	 7) restart_crontab;;
+# 	 8) exit 0	;;
+# 	 *) echo -e "${Error} 请输入正确的数字 [1-7]" && exit 1;;
+#     esac
+# }
+delete_clearlog(){
+ if [ ! -e "$cron" ]; then
+  if  grep -q pandorabox /etc/banner ; then
+   if  grep -q adbyby脚本日志清空 $cron ; then
+	 plan_the_task_line=$(grep -n "每星期一1点清空日志" $cron  | awk '{print $1}' | sed 's/://g')
+	 rod=`expr $plan_the_task_line - 4`
+	 sed -i "$rod,+4d" $cron
+     sed -i '/每星期一1点清空日志/d' $crontab
+	 /etc/init.d/cron restart
+     echo -e "${Info} 删除成功";
+   else
+     echo -e "${Error} 未添加计划任务"
+   fi
+  else
+     echo -e "${Error} 不支持当前固件，请手动删除计划任务"    
+  fi
+ else
+   	sed -i '/每星期一1点清空日志/d' $crontab
+    /etc/init.d/cron restart 
+    echo -e "${Info} 删除成功"
+ fi  
 }
 auto_adupdate_auto_uninstall(){                                
  if [ ! -e "$cron" ]; then
