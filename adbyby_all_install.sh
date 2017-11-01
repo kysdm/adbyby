@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.8"
+sh_ver="1.2.9"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -422,36 +422,47 @@ adbyby_uninstall(){
 other(){
   echo -e "
 ————————————"
-  menu_kill_rule
 echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或hiboy服务器上的规则为主
-  ${Green_font_prefix}2.${Font_color_suffix} 以adbyby官方服务器为主
-————————————
-  ${Green_font_prefix}3.${Font_color_suffix} 查看当前规则时间
+  ${Green_font_prefix}2.${Font_color_suffix} 以adbyby官方服务器为主"
+  menu_kill_rule
+echo -e "————————————
+  ${Green_font_prefix}3.${Font_color_suffix} 重启ADBYBY进程
+  ${Green_font_prefix}4.${Font_color_suffix} 停止ADBYBY进程
+————————————   
+  ${Green_font_prefix}5.${Font_color_suffix} 查看当前规则时间
+  ${Green_font_prefix}6.${Font_color_suffix} 查看规则辅助更新脚本日志
 ———————————— 
-  ${Green_font_prefix}4.${Font_color_suffix} 退出
+  ${Green_font_prefix}7.${Font_color_suffix} 升级一键管理脚本脚本
+  ${Green_font_prefix}8.${Font_color_suffix} 升级规则辅助更新脚本 
+  ${Green_font_prefix}9.${Font_color_suffix} 退出
 ————————————"
-    read -p " 现在选择顶部选项 [1-4]: " input
+    read -p " 现在选择顶部选项 [1-9]: " input
     case $input in 
 	 1) kill_rule;;
 	 2) re_rule_server;;
-     3) cat_lazy
+     3) restart_adbyby;;
+     4) stop_adbyby;;
+     5) cat_lazy
 	    cat_video;;
-	 4) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
+     6) check_adupdate_log;;
+     7) Update_all_install;;
+     8) Update_adupdate ;;    
+	 9) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-9]" && exit 1;;
     esac 
 }
 menu_kill_rule(){
     if  grep -q YES $ADBYBY/create_jd.txt ; then
-    echo -e "  ${Info} 当前使用GitHub或hiboy服务器上的规则"
+      echo -e "  ${Info} 当前使用GitHub或hiboy服务器上的规则"
     else
-    echo -e "  ${Info} 当前使用adbyby官方服务器规则"
+      echo -e "  ${Info} 当前使用adbyby官方服务器规则"
     fi
 }
 kill_rule(){
        echo && echo -e "   
 ———————————— 
   ${Green_font_prefix}1.${Font_color_suffix} 方案一：需要有足够的空间,且系统分区格式要为ext2,3,4，通常硬路由分区都不使用这种格式
-  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名,当主服务器发生错误时也可用此方法
+  ${Green_font_prefix}2.${Font_color_suffix} 方案二：通过屏蔽adbyby更新域名,连接此路由的所有设备将无法连接官方更新服务器
   ${Green_font_prefix}3.${Font_color_suffix} 退出
 ————————————" && echo  
     read -p " 现在选择顶部选项 [1-3]: " input
@@ -563,42 +574,29 @@ fi
   ${Green_font_prefix}2.${Font_color_suffix} 卸载LCUI_ADBYBY程序
 ————————————
   ${Green_font_prefix}3.${Font_color_suffix} 下载规则辅助更新脚本
-  ${Green_font_prefix}4.${Font_color_suffix} 升级规则辅助更新脚本
-  ${Green_font_prefix}5.${Font_color_suffix} 删除规则辅助更新脚本
-  ${Green_font_prefix}6.${Font_color_suffix} 运行规则辅助更新脚本
+  ${Green_font_prefix}4.${Font_color_suffix} 删除规则辅助更新脚本
+  ${Green_font_prefix}5.${Font_color_suffix} 运行规则辅助更新脚本
 ————————————
-  ${Green_font_prefix}7.${Font_color_suffix} 添加自动更新规则功能
-  ${Green_font_prefix}8.${Font_color_suffix} 删除自动更新规则功能
+  ${Green_font_prefix}6.${Font_color_suffix} 添加自动更新规则功能
+  ${Green_font_prefix}7.${Font_color_suffix} 删除自动更新规则功能
 ————————————
-  ${Green_font_prefix}9.${Font_color_suffix} 重启ADBYBY主程序
- ${Green_font_prefix}10.${Font_color_suffix} 停止ADBYBY进程
- ${Green_font_prefix}11.${Font_color_suffix} 查看规则辅助更新脚本日志
+  ${Green_font_prefix}8.${Font_color_suffix} 次要功能 
+  ${Green_font_prefix}9.${Font_color_suffix} 退出
 ————————————
- ${Green_font_prefix}12.${Font_color_suffix} 其他功能 
- ${Green_font_prefix}13.${Font_color_suffix} 升级脚本 
- ${Green_font_prefix}14.${Font_color_suffix} 退出菜单
-————————————
- $Tip 有BUG请群里私聊我,现主服务器有防火墙直接下载规则会报错,请用(12)其他功能中屏蔽掉主服务器!!! " && echo
+ $Tip 有BUG请群里私聊我,最好屏蔽掉主服务器(次要功能中进行屏蔽) "
   echo -e " 安装情况如下:" 
-  menu_adbyby
-  menu_adupdate
-  menu_auto_adupdate
-  echo && read -p "现在选择顶部选项 [1-14]: " input
+  menu_adbyby; menu_adupdate; menu_auto_adupdate;
+  echo && read -p "现在选择顶部选项 [1-9]: " input
 case $input in 
 	1) adbyby_install;;
 	2) adbyby_uninstall;;
 	3) Download_adupdate;;
-    4) Update_adupdate;;
-	5) delete_adupdate;;
-	6) run_adupdate;;
-	7) auto_adupdate_install;;
-	8) auto_adupdate_uninstall;;	
-	9) restart_adbyby;;
-	10) stop_adbyby;;
-	11) check_adupdate_log;;
-	12) other;;
-	13) Update_all_install;;
-	14) exit 0	;;
-	*) echo -e "${Error} 请输入正确的数字 [1-14]" && exit 1;;
+	4) delete_adupdate;;
+	5) run_adupdate;;
+	6) auto_adupdate_install;;
+	7) auto_adupdate_uninstall;;	
+	8) other;;
+	9) exit 0	;;
+	*) echo -e "${Error} 请输入正确的数字 [1-9]" && exit 1;;
 esac
 
