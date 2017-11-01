@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.2.9"
+sh_ver="1.3.0"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -336,7 +336,7 @@ auto_adupdate3_uninstall(){
 adbyby_install(){
     echo && echo -e "
 ————————————
-  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件推荐使用)
+  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件推荐使用)(需要进入web管理界面二次确认安装)
   ${Green_font_prefix}2.${Font_color_suffix} 安装ar71xx版
   ${Green_font_prefix}3.${Font_color_suffix} 安装arm版
   ${Green_font_prefix}4.${Font_color_suffix} 安装armv7版
@@ -560,6 +560,14 @@ menu_auto_adupdate(){
       fi  
     fi
 }
+# #创建adbyby文件夹
+# if [ ! -d "$ADBYBY" ]; then
+#    mkdir /usr/share/adbyby
+# fi
+#赋予权限
+if [ ! -x "$ADBYBY/adbyby_all_install.sh" ]; then
+  chmod 777 $ADBYBY/adbyby_all_install.sh
+fi
 #创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
