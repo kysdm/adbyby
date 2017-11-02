@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.3.1"
+sh_ver="1.3.3"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -181,6 +181,7 @@ auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
 	echo -e "${Info} '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'"
+    exit 0
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
@@ -217,6 +218,7 @@ add_clearlog(){
         echo -e "${Error} 因没有对应固件无法做支持"
         echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
 	    echo -e "${Info} '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1'"
+        exit 0
      fi
     else
      sed -i '/每星期一1点清空日志/d' $crontab
@@ -288,7 +290,8 @@ delete_clearlog(){
      echo -e "${Error} 未添加计划任务"
    fi
   else
-     echo -e "${Error} 不支持当前固件，请手动删除计划任务"    
+     echo -e "${Error} 不支持当前固件，请手动删除计划任务"
+     exit 0    
   fi
  else
    	sed -i '/每星期一1点清空日志/d' $crontab
@@ -303,7 +306,8 @@ auto_adupdate_auto_uninstall(){
       sed -i '/adbyby/d' $crontab
       /etc/init.d/cron restart
   else
-     echo -e "${Error} 不支持当前固件，请手动删除计划任务"    
+     echo -e "${Error} 不支持当前固件，请手动删除计划任务"
+     exit 0    
   fi
  else
    auto_adupdate2_uninstall
@@ -324,10 +328,6 @@ auto_adupdate2_uninstall(){
 	sed -i '/adbyby/d' $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 删除成功"
-}
-auto_adupdate3_uninstall(){
-    echo -e "${Error} 因没有对应固件无法做支持"
-    echo -e "${Info} 请手动删除添加的计划任务"
 }
 adbyby_install(){
     echo && echo -e "
@@ -497,10 +497,11 @@ re_rule_server(){
     /etc/init.d/dnsmasq restart
     sed -i 's/none/video,lazya/g' $ADBYBY/adhook.ini
     echo "NO" > $ADBYBY/create_jd.txt
-    chattr -i $ADBYBY/data/lazy.txt
-    chattr -i $ADBYBY/data/video.txt
-		read -p "是否移除chattr插件(默认: n):" yn
-		[[ -z "${yn}" ]] && yn="n"
+     if  grep -q chattr /tmp/installed.txt ; then
+        chattr -i $ADBYBY/data/lazy.txt
+        chattr -i $ADBYBY/data/video.txt
+        read -p "是否移除chattr插件(默认: n):" yn
+	    [[ -z "${yn}" ]] && yn="n"
         case $yn in 
          y|Y) 
          opkg remove chattr 
@@ -513,6 +514,8 @@ re_rule_server(){
          echo -e "${Info} 保留chattr插件并更改成功" 
          ;;
         esac 
+     fi       
+    echo -e "${Info} 更改成功" 
 }
 cat_lazy(){
     lazy_time=$(sed -n '1p' $ADBYBY/data/lazy.txt | awk -F' ' '{print $3,$4}')
@@ -556,6 +559,29 @@ menu_auto_adupdate(){
       fi  
     fi
 }
+fool_install(){
+   if  grep -q adbyby /tmp/installed.txt ; then
+      kill_rule_domain
+      Download_adupdate  
+      auto_adupdate_auto_install
+      add_clearlog
+      run_adupdate
+      echo -e "${Info} 一键安装成功"
+   else
+      echo -e "${Error} 未安装主程序"
+   fi 
+}
+fool_unstall(){
+   if  grep -q adbyby /tmp/installed.txt ; then
+      re_rule_server
+      delete_adupdate  
+      auto_adupdate_auto_uninstall
+      delete_clearlog
+      echo -e "${Info} 一键卸载成功"
+   else
+      echo -e "${Error} 未安装主程序"
+   fi 
+}
 # #创建adbyby文件夹
 # if [ ! -d "$ADBYBY" ]; then
 #    mkdir /usr/share/adbyby
@@ -584,13 +610,16 @@ fi
   ${Green_font_prefix}6.${Font_color_suffix} 添加自动更新规则功能
   ${Green_font_prefix}7.${Font_color_suffix} 删除自动更新规则功能
 ————————————
-  ${Green_font_prefix}8.${Font_color_suffix} 次要功能 
-  ${Green_font_prefix}9.${Font_color_suffix} 退出
+  ${Green_font_prefix}8.${Font_color_suffix} 一键傻瓜式安装(主程序不会安装)
+  ${Green_font_prefix}9.${Font_color_suffix} 一键傻瓜式卸载(主程序不会卸载)
+————————————  
+  ${Green_font_prefix}10.${Font_color_suffix} 次要功能
+  ${Green_font_prefix}11.${Font_color_suffix} 退出
 ————————————
  $Tip 有BUG请群里私聊我,最好屏蔽掉主服务器(次要功能中进行屏蔽) "
   echo -e " 安装情况如下:" 
   menu_adbyby; menu_adupdate; menu_auto_adupdate;
-  echo && read -p "现在选择顶部选项 [1-9]: " input
+  echo && read -p "现在选择顶部选项 [1-11]: " input
 case $input in 
 	1) adbyby_install;;
 	2) adbyby_uninstall;;
@@ -599,8 +628,10 @@ case $input in
 	5) run_adupdate;;
 	6) auto_adupdate_install;;
 	7) auto_adupdate_uninstall;;	
-	8) other;;
-	9) exit 0	;;
-	*) echo -e "${Error} 请输入正确的数字 [1-9]" && exit 1;;
+    8) fool_install;;
+    9) fool_unstall;;
+	10) other;;
+	11) exit 0	;;
+	*) echo -e "${Error} 请输入正确的数字 [1-11]" && exit 1;;
 esac
 
