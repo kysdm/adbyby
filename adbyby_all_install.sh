@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.3.3"
+sh_ver="1.3.4"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -230,7 +230,7 @@ add_clearlog(){
 auto_adupdate_uninstall(){
 	echo && echo -e "
 ————————————
- ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动移除自动更新规则功能   
+ ${Green_font_prefix}1.${Font_color_suffix} 移除自动更新规则功能   
  ${Green_font_prefix}2.${Font_color_suffix} 移除定时清空日志功能
 ————————————
  ${Green_font_prefix}3.${Font_color_suffix} 重启crontab进程
@@ -277,7 +277,7 @@ auto_adupdate_uninstall(){
 #     esac
 # }
 delete_clearlog(){
- if [ ! -e "$cron" ]; then
+ if [ -e "$cron" ]; then
   if  grep -q pandorabox /etc/banner ; then
    if  grep -q adbyby脚本日志清空 $cron ; then
 	 plan_the_task_line=$(grep -n "每星期一1点清空日志" $cron  | awk '{print $1}' | sed 's/://g')
@@ -300,7 +300,7 @@ delete_clearlog(){
  fi  
 }
 auto_adupdate_auto_uninstall(){                                
- if [ ! -e "$cron" ]; then
+ if [ -e "$cron" ]; then
   if  grep -q pandorabox /etc/banner ; then
       auto_adupdate1_uninstall
       sed -i '/adbyby/d' $crontab
