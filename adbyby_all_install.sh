@@ -14,7 +14,7 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.3.4"
+sh_ver="1.3.5"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
@@ -559,6 +559,21 @@ menu_auto_adupdate(){
       fi  
     fi
 }
+menu_auto_clearlog(){
+    if [ -e "$cron" ]; then
+      if  grep -q "adbyby脚本日志清空" "$cron" || grep -q "每星期一1点清空日志" "$crontab"; then
+        echo -e " [ 已启用自动清空日志功能 ]"
+     else
+         echo -e " [ 未启用自动清空日志功能 ]"
+      fi 
+    else
+      if  grep -q "每星期一1点清空日志" "$crontab"; then
+         echo -e " [ 已启用自动清空日志功能 ]"  
+      else
+         echo -e " [ 未启用自动清空日志功能 ]"
+      fi  
+    fi
+}
 fool_install(){
    if  grep -q adbyby /tmp/installed.txt ; then
       kill_rule_domain
@@ -581,6 +596,13 @@ fool_unstall(){
    else
       echo -e "${Error} 未安装主程序"
    fi 
+}
+installation_status(){
+   echo && echo -e " 安装情况如下:" 
+     menu_adbyby
+     menu_adupdate
+     menu_auto_adupdate
+     menu_auto_clearlog
 }
 # #创建adbyby文件夹
 # if [ ! -d "$ADBYBY" ]; then
@@ -612,14 +634,13 @@ fi
 ————————————
   ${Green_font_prefix}8.${Font_color_suffix} 一键傻瓜式安装(主程序不会安装)
   ${Green_font_prefix}9.${Font_color_suffix} 一键傻瓜式卸载(主程序不会卸载)
-————————————  
-  ${Green_font_prefix}10.${Font_color_suffix} 次要功能
-  ${Green_font_prefix}11.${Font_color_suffix} 退出
+————————————
+ ${Green_font_prefix}10.${Font_color_suffix} 查询当前安装状态 
+ ${Green_font_prefix}11.${Font_color_suffix} 次要功能
+ ${Green_font_prefix}12.${Font_color_suffix} 退出
 ————————————
  $Tip 有BUG请群里私聊我,最好屏蔽掉主服务器(次要功能中进行屏蔽) "
-  echo -e " 安装情况如下:" 
-  menu_adbyby; menu_adupdate; menu_auto_adupdate;
-  echo && read -p "现在选择顶部选项 [1-11]: " input
+  echo && read -p "现在选择顶部选项 [1-12]: " input
 case $input in 
 	1) adbyby_install;;
 	2) adbyby_uninstall;;
@@ -630,8 +651,9 @@ case $input in
 	7) auto_adupdate_uninstall;;	
     8) fool_install;;
     9) fool_unstall;;
-	10) other;;
-	11) exit 0	;;
-	*) echo -e "${Error} 请输入正确的数字 [1-11]" && exit 1;;
+    10) installation_status;;
+	11) other;;
+	12) exit 0	;;
+	*) echo -e "${Error} 请输入正确的数字 [1-12]" && exit 1;;
 esac
 
