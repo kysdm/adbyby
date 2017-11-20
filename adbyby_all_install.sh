@@ -419,7 +419,7 @@ adbyby_uninstall(){
 other(){
   echo -e "
 ————————————"
-echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或hiboy服务器上的规则为主
+echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或Conding服务器上的规则为主
   ${Green_font_prefix}2.${Font_color_suffix} 以adbyby官方服务器为主"
   menu_kill_rule
 echo -e "————————————
@@ -450,7 +450,7 @@ echo -e "————————————
 }
 menu_kill_rule(){
     if  grep -q YES $ADBYBY/create_jd.txt ; then
-      echo -e "  ${Info} 当前使用GitHub或hiboy服务器上的规则"
+      echo -e "  ${Info} 当前使用GitHub或Conding服务器上的规则"
     else
       echo -e "  ${Info} 当前使用adbyby官方服务器规则"
     fi
