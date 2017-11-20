@@ -7,6 +7,7 @@ cron=/etc/config/cron
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 luci="http://code.taobao.org/svn/luci-app-adbyby" 
 kysdm_github="https://raw.githubusercontent.com/kysdm/adbyby" 
+kysdm_coding="https://coding.net/u/kysdm/p/adbyby/git/raw"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -14,10 +15,10 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
 
-sh_ver="1.3.5"
+sh_ver="1.3.6"
 
 Download_adupdate(){
-    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
+    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
      if [ "$?"x == "0"x ]; then
       chmod 777 $ADBYBY/adupdate.sh
       echo -e "${Info} 下载成功"  
@@ -28,7 +29,7 @@ Download_adupdate(){
 }
 Update_all_install(){
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-    wget -t3 -T10 --no-check-certificate -q -O /tmp/adbyby_all_install.sh $kysdm_github/master/adbyby_all_install.sh
+    wget -t3 -T10 --no-check-certificate -q -O /tmp/adbyby_all_install.sh $kysdm_coding/master/adbyby_all_install.sh
 	sh_new_ver=$(grep 'sh_ver="' /tmp/adbyby_all_install.sh |awk -F "=" '{print $NF}'| sed 's/\"//g' | sed -n '1p')
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
@@ -54,7 +55,7 @@ Update_all_install(){
 Update_adupdate(){
     sh_ver=$(grep 'sh_ver="' $ADBYBY/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-    wget -t3 -T10 --no-check-certificate -q -O /tmp/adupdate.sh $kysdm_github/master/adupdate.sh
+    wget -t3 -T10 --no-check-certificate -q -O /tmp/adupdate.sh $kysdm_coding/master/adupdate.sh
 	sh_new_ver=$(grep 'sh_ver="' /tmp/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
