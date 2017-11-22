@@ -12,19 +12,15 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
-
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-
-sh_ver="1.3.6"
+sh_ver="1.3.7"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
      if [ "$?"x == "0"x ]; then
-      chmod 777 $ADBYBY/adupdate.sh
-      echo -e "${Info} 下载成功"  
+      chmod 777 $ADBYBY/adupdate.sh && echo -e "${Info} 下载成功"
      else
-      echo -e "${Error} 下载失败" 
-      exit 1
+      echo -e "${Error} 下载失败" && exit 1
      fi  
 }
 Update_all_install(){
@@ -39,8 +35,7 @@ Update_all_install(){
         case $yn in 
          y|Y) 
          cp -f /tmp/adbyby_all_install.sh $ADBYBY/adbyby_all_install.sh
-         chmod 777 $ADBYBY/adbyby_all_install.sh
-         rm -f /tmp/adbyby_all_install.sh
+         chmod 777 $ADBYBY/adbyby_all_install.sh && rm -f /tmp/adbyby_all_install.sh
          echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
          ;;
          n|N)
@@ -65,8 +60,7 @@ Update_adupdate(){
         case $yn in 
          y|Y) 
          cp -f /tmp/adupdate.sh $ADBYBY/adupdate.sh
-         chmod 777 $ADBYBY/adupdate.sh
-         rm -f /tmp/adupdate.sh
+         chmod 777 $ADBYBY/adupdate.sh && rm -f /tmp/adupdate.sh
          echo -e "${Info} 脚本已更新为最新版本[ ${sh_new_ver} ] !"
          ;;
          n|N)
@@ -79,27 +73,22 @@ Update_adupdate(){
 	exit 0
 }
 delete_adupdate(){
- 	rm -f $ADBYBY/adupdate.sh
-    rm -f $ADBYBY/create_jd.txt
- 	echo -e "${Info} 删除成功"
+ 	rm -f $ADBYBY/adupdate.sh $ADBYBY/create_jd.txt && echo -e "${Info} 删除成功"
 }
 run_adupdate(){
     sh $ADBYBY/adupdate.sh
 }
 restart_adbyby(){
-    /etc/init.d/adbyby restart 2>&1
-    echo -e "${Info} 重启完成"
+    /etc/init.d/adbyby restart 2>&1 && echo -e "${Info} 重启完成"
 }
 restart_crontab(){
-    /etc/init.d/cron restart 2>&1
-    echo -e "${Info} 重启完成"
+    /etc/init.d/cron restart 2>&1 && echo -e "${Info} 重启完成" 
 }
 check_adupdate_log(){
     cat /tmp/log/adupdate.log
 }
 stop_adbyby(){
-    /etc/init.d/adbyby stop
-    echo -e "${Info} 停止成功"
+    /etc/init.d/adbyby stop && echo -e "${Info} 停止成功"
 }
 auto_adupdate_install(){
 	echo && echo -e "
@@ -120,22 +109,6 @@ auto_adupdate_install(){
 	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
     esac
 }
-# —————自动判断 测试功能
-#  ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动添加自动更新规则功能  
-# —————未安装规则辅助更新脚本
-#  ${Green_font_prefix}2.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-# —————已安装规则辅助更新脚本
-#  ${Green_font_prefix}3.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
-#  ${Green_font_prefix}4.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-#  ${Green_font_prefix}5.${Font_color_suffix} 添加自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
-# ————————————
-#  ${Green_font_prefix}6.${Font_color_suffix} 添加定时清空日志功能
-#  ${Green_font_prefix}7.${Font_color_suffix} 重启crontab进程
-#  ${Green_font_prefix}8.${Font_color_suffix} 退出
-	#  2) auto_adupdate4_install;;
-	#  3) auto_adupdate1_install;;
-	#  4) auto_adupdate2_install;;
-    #  5) auto_adupdate3_install;;
 auto_adupdate_auto_install(){
     if [ -e "$cron" ]; then
      if  grep -q pandorabox /etc/banner ; then
@@ -148,7 +121,7 @@ auto_adupdate_auto_install(){
     fi  
 }
 auto_adupdate1_install(){
-    sed -i '/adbyby/d' $crontab  #防止有两条相同计划任务在系统中
+    sed -i '/adbyby/d' $crontab
 	if  grep -q adbyby规则更新 $cron ; then
 	   plan_the_task_line=$(grep -n "$ADBYBY/adupdate.sh" $cron  | awk '{print $1}' | sed 's/://g')
 	   rod=`expr $plan_the_task_line - 4`
@@ -247,36 +220,6 @@ auto_adupdate_uninstall(){
 	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
     esac
 }
-# auto_adupdate_uninstall(){
-# 	echo && echo -e "
-# —————自动判断 测试功能
-#  ${Green_font_prefix}1.${Font_color_suffix} 自动判断当前固件，并自动移除自动更新规则功能   
-# —————未安装规则辅助更新脚本启用自动更新规则功能的
-#  ${Green_font_prefix}2.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-# —————已安装规则辅助更新脚本启用自动更新规则功能的
-#  ${Green_font_prefix}3.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(新版pandorabox固件)
-#  ${Green_font_prefix}4.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为一个框(常见界面需自己手打任务时间)
-#  ${Green_font_prefix}5.${Font_color_suffix} 移除自动更新规则功能，web计划任务界面为可视化操控界面(非新版pandorabox固件)
-# ————————————
-#  ${Green_font_prefix}6.${Font_color_suffix} 添加定时清空日志功能
-
-#  ${Green_font_prefix}7.${Font_color_suffix} 重启crontab进程
-#  ${Green_font_prefix}8.${Font_color_suffix} 退出
-# ———————————— 
-#  $Tip 仅限删除本脚本添加的计划任务 " && echo
-#     read -p " 现在选择顶部选项 [1-7]: " input
-#     case $input in 
-# 	 1) auto_adupdate_auto_uninstall;;    
-# 	 2) auto_adupdate2_uninstall;;
-# 	 3) auto_adupdate1_uninstall;;
-# 	 4) auto_adupdate2_uninstall;;
-#      5) auto_adupdate3_uninstall;;
-#      6) delete_clearlog;;
-# 	 7) restart_crontab;;
-# 	 8) exit 0	;;
-# 	 *) echo -e "${Error} 请输入正确的数字 [1-7]" && exit 1;;
-#     esac
-# }
 delete_clearlog(){
  if [ -e "$cron" ]; then
   if  grep -q pandorabox /etc/banner ; then
@@ -333,7 +276,7 @@ auto_adupdate2_uninstall(){
 adbyby_install(){
     echo && echo -e "
 ————————————
-  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件推荐使用)(需要进入web管理界面二次确认安装)
+  ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件必须使用这个)(需要进入web管理界面二次确认安装)
   ${Green_font_prefix}2.${Font_color_suffix} 安装ar71xx版
   ${Green_font_prefix}3.${Font_color_suffix} 安装arm版
   ${Green_font_prefix}4.${Font_color_suffix} 安装armv7版
@@ -364,53 +307,41 @@ adbyby_install(){
     esac
 }
 auto_adbyby_install(){
-    opkg update
-    opkg install $luci/adbyby_2.7-8.0_all.ipk
+    opkg update && opkg install $luci/adbyby_2.7-8.0_all.ipk
 }
 ar71xx(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_ar71xx.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_ar71xx.ipk
 }
 arm(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_arm.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_arm.ipk
 }
 armv7(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_armv7.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_armv7.ipk
 }
 pandorabox_dedicated(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_ralink.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_ralink.ipk
 }
 OPENWRT_dedicated(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_ramips_24kec.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_ramips_24kec.ipk
 }
 pandorabox_dedicated_new(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
 }
 pandorabox_dedicated_small(){
-    opkg update
-    opkg install $luci/adbyby_mini_2.7-7.0_ralink.ipk
+    opkg update && opkg install $luci/adbyby_mini_2.7-7.0_ralink.ipk
 }
 pandorabox_dedicated_small_new(){
-    opkg update
-    opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
+    opkg update && opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
 }
 x86(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_x86.ipk 
+    opkg update && opkg install $luci/adbyby_2.7-7.0_x86.ipk 
 }
 x64(){
-    opkg update
-    opkg install $luci/adbyby_2.7-7.0_x64.ipk
+    opkg update && opkg install $luci/adbyby_2.7-7.0_x64.ipk
 }
 adbyby_uninstall(){
    if  grep -q adbyby /tmp/installed.txt ; then
-     opkg remove adbyby
-     echo -e "${Info} 卸载成功"
+     opkg remove adbyby && echo -e "${Info} 卸载成功" 
    else
      echo -e "${Error} 未安装ADBYBY"
    fi 
@@ -419,7 +350,7 @@ adbyby_uninstall(){
 other(){
   echo -e "
 ————————————"
-echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或Conding服务器上的规则为主
+echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 以GitHub或Coding服务器上的规则为主
   ${Green_font_prefix}2.${Font_color_suffix} 以adbyby官方服务器为主"
   menu_kill_rule
 echo -e "————————————
@@ -450,7 +381,7 @@ echo -e "————————————
 }
 menu_kill_rule(){
     if  grep -q YES $ADBYBY/create_jd.txt ; then
-      echo -e "  ${Info} 当前使用GitHub或Conding服务器上的规则"
+      echo -e "  ${Info} 当前使用GitHub或Coding服务器上的规则"
     else
       echo -e "  ${Info} 当前使用adbyby官方服务器规则"
     fi
@@ -505,11 +436,8 @@ re_rule_server(){
 	    [[ -z "${yn}" ]] && yn="n"
         case $yn in 
          y|Y) 
-         opkg remove chattr 
-         opkg remove e2fsprogs
-         opkg remove libext2fs
-         echo -e "${Info} 已移除chattr插件并更改成功" 
-         exit 0
+         opkg remove chattr e2fsprogs libext2fs
+         echo -e "${Info} 已移除chattr插件并更改成功" && exit 0
          ;;
          n|N)
          echo -e "${Info} 保留chattr插件并更改成功" 
@@ -577,11 +505,7 @@ menu_auto_clearlog(){
 }
 fool_install(){
    if  grep -q adbyby /tmp/installed.txt ; then
-      kill_rule_domain
-      Download_adupdate  
-      auto_adupdate_auto_install
-      add_clearlog
-      run_adupdate
+      kill_rule_domain;Download_adupdate;auto_adupdate_auto_install;add_clearlog;run_adupdate
       echo -e "${Info} 一键安装成功"
    else
       echo -e "${Error} 未安装主程序"
@@ -589,10 +513,7 @@ fool_install(){
 }
 fool_unstall(){
    if  grep -q adbyby /tmp/installed.txt ; then
-      re_rule_server
-      delete_adupdate  
-      auto_adupdate_auto_uninstall
-      delete_clearlog
+      re_rule_server;delete_adupdate;auto_adupdate_auto_uninstall;delete_clearlog
       echo -e "${Info} 一键卸载成功"
    else
       echo -e "${Error} 未安装主程序"
@@ -605,20 +526,13 @@ installation_status(){
      menu_auto_adupdate
      menu_auto_clearlog
 }
-# #创建adbyby文件夹
-# if [ ! -d "$ADBYBY" ]; then
-#    mkdir /usr/share/adbyby
-# fi
-#赋予权限
 if [ ! -x "$ADBYBY/adbyby_all_install.sh" ]; then
   chmod 777 $ADBYBY/adbyby_all_install.sh
 fi
-#创建判断文件
 if [ ! -e "$ADBYBY/create_jd.txt" ]; then
    touch $ADBYBY/create_jd.txt
    echo "NO" > $ADBYBY/create_jd.txt
 fi
-#主菜单
  echo -e "
   ADBYBY一键管理脚本  ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   适用于pandorabox openwrt LEDE 固件 
