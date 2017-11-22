@@ -1,0 +1,129 @@
+#!/bin/sh /etc/rc.common
+#by 1248289414
+
+START=99
+STOP=01
+
+SERVICE_DAEMONIZE=1
+
+rule()
+{
+	rule_add(){
+		local value="$1"
+		echo >> /tmp/adbyby_user.txt
+		wget -O- $value >> /tmp/adbyby_user.txt -t 5 --quiet --no-check-certificate
+		sleep 1
+	}
+	[ ! -h /usr/share/adbyby/data/user.txt ] && ln -s /tmp/adbyby_user.txt /usr/share/adbyby/data/user.txt
+	rm -f /usr/share/adbyby/data/user.bin
+	cat /usr/share/adbyby/user.txt > /tmp/adbyby_user.txt
+	config_list_foreach $1 address rule_add
+}
+
+ipset_mode(){
+	ipset -N adbyby_list hash:ip
+	iptables -t nat -A ADBYBY_RULE -p tcp -m set --match-set adbyby_list dst -j REDIRECT --to-port 8118
+	sed -e '/.*ipset.list/d' -i /etc/dnsmasq.conf
+	echo -e " \nconf-file=/usr/share/adbyby/ipset.list" >> "/etc/dnsmasq.conf"
+	/etc/init.d/dnsmasq restart
+}
+
+clean_rules()
+{
+	until [ -z "$(iptables-save -t nat | grep "zone_lan_prerouting" | grep "ADBYBY_RULE")" ]
+	do
+		iptables -t nat -D $(iptables-save -t nat | grep "zone_lan_prerouting" | grep "ADBYBY_RULE" | sed 's/^-A //g') 2>/dev/null
+		sleep 1
+	done
+	iptables -t nat -F ADBYBY_RULE 2>/dev/null
+	iptables -t nat -X ADBYBY_RULE 2>/dev/null
+	ipset -F adbyby_list 2>/dev/null
+	ipset -X adbyby_list 2>/dev/null
+	sed -e '/.*ipset.list/d' -i /etc/dnsmasq.conf 2>/dev/null
+	/etc/init.d/dnsmasq restart 2>/dev/null
+}
+
+add_rules()
+{
+	add_exdomain(){
+		local value="$1"
+		iptables -t nat -A ADBYBY_RULE -d $value -j RETURN
+	}
+	white_rule(){
+		local value="$1"
+		iptables -t nat -A ADBYBY_RULE -s $value -p tcp -j REDIRECT --to-ports 8118
+	}
+	black_rule(){
+		local value="$1"
+		iptables -t nat -A ADBYBY_RULE -s $value -j RETURN
+	}
+	ban_host(){
+		local value="$1"
+		iptables -t nat -A ADBYBY_RULE -s $value -p tcp -j REDIRECT --to-ports 8118
+	}
+	clean_rules
+	config_get adbyby_mode $1 adbyby_mode 0
+	[ $adbyby_mode = 4 ] && return 0
+	iptables -t nat -N ADBYBY_RULE
+	iptables -t nat -A ADBYBY_RULE -d 0.0.0.0/8 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 10.0.0.0/8 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 127.0.0.0/8 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 169.254.0.0/16 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 172.16.0.0/12 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 192.168.0.0/16 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 224.0.0.0/4 -j RETURN
+	iptables -t nat -A ADBYBY_RULE -d 240.0.0.0/4 -j RETURN
+	config_list_foreach $1 exdomain add_exdomain
+	config_get port $1 port 80
+	case $adbyby_mode in
+	0)
+		iptables -t nat -A ADBYBY_RULE -p tcp -j REDIRECT --to-ports 8118
+		;;
+	1)
+		config_list_foreach $1 adbyby_list white_rule
+		iptables -t nat -A ADBYBY_RULE -j RETURN
+		;;
+	2)
+		config_list_foreach $1 adbyby_list black_rule
+		iptables -t nat -A ADBYBY_RULE -p tcp -j REDIRECT --to-ports 8118
+		;;
+	3)
+		config_list_foreach $1 host_list ban_host
+		iptables -t nat -A ADBYBY_RULE -j RETURN
+		;;
+	5)
+		ipset_mode
+		;;
+	esac
+	[ -n "$(pgrep /usr/share/adbyby/adbyby)" ] && iptables -t nat -I zone_lan_prerouting -p tcp -m multiport --dport $port -j ADBYBY_RULE
+}
+
+boot()
+{
+	until iptables-save -t nat | grep -q "^:zone_lan_prerouting"; do
+		sleep 1
+	done
+	start
+}
+
+start()
+{
+	config_load adbyby
+	config_foreach rule adbyby
+	service_start /usr/share/adbyby/adbyby
+	until pgrep /usr/share/adbyby/adbyby >>/dev/null ; do
+		sleep 1
+	done
+	config_foreach add_rules adbyby
+}
+
+stop()
+{
+	clean_rules
+	service_stop /usr/share/adbyby/adbyby
+}
+
+reload()
+{
+	restart
+}
