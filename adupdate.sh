@@ -4,7 +4,7 @@ alias echo_date="echo 【$(date +%Y年%m月%d日\ %X)】:"
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.1.6"
+sh_ver="1.1.7"
 github_rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 coding_rules="https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master"
 #hiboy_rules="http://opt.cn2qq.com/opt-file"
@@ -44,7 +44,6 @@ judge_update(){
         fi
     fi
 }
-
 download_lazy(){
     wget --no-check-certificate -O /tmp/lazy.txt $coding_rules/lazy.txt
       if [ "$?"x != "0"x ]; then
@@ -77,12 +76,12 @@ download_video(){
         cp -f /tmp/video.txt $ADBYBY/data/video.txt
       fi  
 }
-create_jd(){
+# create_jd(){
     if [ ! -e "$ADBYBY/create_jd.txt" ]; then
         touch $ADBYBY/create_jd.txt
         echo "NO" > $ADBYBY/create_jd.txt
     fi
-}
+# }
 # check_rules(){
     echo_date "$separated脚本开始运行$separated" && cd /tmp
     md5sum /usr/share/adbyby/data/lazy.txt /usr/share/adbyby/data/video.txt > local-md5.json
