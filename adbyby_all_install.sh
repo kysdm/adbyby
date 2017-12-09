@@ -13,7 +13,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.3.7"
+sh_ver="1.3.8"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -126,8 +126,7 @@ auto_adupdate1_install(){
 	   plan_the_task_line=$(grep -n "$ADBYBY/adupdate.sh" $cron  | awk '{print $1}' | sed 's/://g')
 	   rod=`expr $plan_the_task_line - 4`
 	   sed -i "$rod,+4d" $cron
-       echo "" >> $cron
-       echo "config task" >> $cron
+       echo -e "\nconfig task" >> $cron
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
@@ -135,8 +134,7 @@ auto_adupdate1_install(){
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	 else
-	   echo "" >> $cron
-       echo "config task" >> $cron
+       echo -e "\nconfig task" >> $cron
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
@@ -145,12 +143,13 @@ auto_adupdate1_install(){
        echo -e "${Info} 写入完成";
 	fi 
 }
-auto_adupdate2_install(){
-	sed -i '/adbyby/d' $crontab
-    echo '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
-    /etc/init.d/cron restart 
-    echo -e "${Info} 写入完成"
-}
+# auto_adupdate2_install(){
+# 	sed -i '/adbyby/d' $crontab
+#     echo "" >> $crontab
+#     echo -e "\n0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1" >> $crontab
+#     /etc/init.d/cron restart 
+#     echo -e "${Info} 写入完成"
+# }
 auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
@@ -159,7 +158,7 @@ auto_adupdate3_install(){
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
-    echo '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1' >> $crontab
+    echo -e "\n0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1" >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
@@ -167,24 +166,22 @@ add_clearlog(){
     if [ -e "$cron" ]; then
      if  grep -q pandorabox /etc/banner ; then
        	if  grep -q adbyby脚本日志清空 $cron ; then
-	        plan_the_task_line=$(grep -n "每星期一1点清空日志" $cron  | awk '{print $1}' | sed 's/://g')
+	        plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
 	        rod=`expr $plan_the_task_line - 4`
 	        sed -i "$rod,+4d" $cron
-            echo "" >> $cron
-            echo "config task" >> $cron
+            echo -e "\nconfig task" >> $cron
             echo "	option enabled '1'" >> $cron
             echo "	option task_name 'adbyby脚本日志清空'" >> $cron
             echo "	option custom '1'" >> $cron
-            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'" >> $cron
+            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
             /etc/init.d/cron restart
             echo -e "${Info} 写入完成";
 	    else
-            echo "" >> $cron
-            echo "config task" >> $cron
+            echo -e "\nconfig task" >> $cron
             echo "	option enabled '1'" >> $cron
             echo "	option task_name 'adbyby脚本日志清空'" >> $cron
             echo "	option custom '1'" >> $cron
-            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'" >> $cron
+            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
             /etc/init.d/cron restart
             echo -e "${Info} 写入完成";
 	    fi 
@@ -195,8 +192,8 @@ add_clearlog(){
         exit 0
      fi
     else
-     sed -i '/每星期一1点清空日志/d' $crontab
-     echo '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #每星期一1点清空日志'>> $crontab
+     sed -i '/clear adupdate log/d' $crontab
+     echo -e "\n0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log" >> $crontab
      /etc/init.d/cron restart
      echo -e "${Info} 写入完成"
     fi  
@@ -224,10 +221,10 @@ delete_clearlog(){
  if [ -e "$cron" ]; then
   if  grep -q pandorabox /etc/banner ; then
    if  grep -q adbyby脚本日志清空 $cron ; then
-	 plan_the_task_line=$(grep -n "每星期一1点清空日志" $cron  | awk '{print $1}' | sed 's/://g')
+	 plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
 	 rod=`expr $plan_the_task_line - 4`
 	 sed -i "$rod,+4d" $cron
-     sed -i '/每星期一1点清空日志/d' $crontab
+     sed -i '/clear adupdate log/d' $crontab
 	 /etc/init.d/cron restart
      echo -e "${Info} 删除成功";
    else
@@ -238,7 +235,7 @@ delete_clearlog(){
      exit 0    
   fi
  else
-   	sed -i '/每星期一1点清空日志/d' $crontab
+   	sed -i '/clear adupdate log/d' $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 删除成功"
  fi  
@@ -278,7 +275,7 @@ adbyby_install(){
 ————————————
   ${Green_font_prefix}1.${Font_color_suffix} 自动判断固件(LEDE固件必须使用这个)(需要进入web管理界面二次确认安装)
   ${Green_font_prefix}2.${Font_color_suffix} 安装ar71xx版
-  ${Green_font_prefix}3.${Font_color_suffix} 安装arm版
+  ${Green_font_prefix}3.${Font_color_suffix} 安装arm版(K3)
   ${Green_font_prefix}4.${Font_color_suffix} 安装armv7版
   ${Green_font_prefix}5.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版
   ${Green_font_prefix}6.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
@@ -490,13 +487,13 @@ menu_auto_adupdate(){
 }
 menu_auto_clearlog(){
     if [ -e "$cron" ]; then
-      if  grep -q "adbyby脚本日志清空" "$cron" || grep -q "每星期一1点清空日志" "$crontab"; then
+      if  grep -q "adbyby脚本日志清空" "$cron" || grep -q "clear adupdate log" "$crontab"; then
         echo -e " [ 已启用自动清空日志功能 ]"
      else
          echo -e " [ 未启用自动清空日志功能 ]"
       fi 
     else
-      if  grep -q "每星期一1点清空日志" "$crontab"; then
+      if  grep -q "clear adupdate log" "$crontab"; then
          echo -e " [ 已启用自动清空日志功能 ]"  
       else
          echo -e " [ 未启用自动清空日志功能 ]"
