@@ -13,7 +13,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.3.8"
+sh_ver="1.3.9"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -85,28 +85,29 @@ restart_crontab(){
     /etc/init.d/cron restart 2>&1 && echo -e "${Info} 重启完成" 
 }
 check_adupdate_log(){
-    cat /tmp/log/adupdate.log
+    # cat /tmp/log/adupdate.log
+    echo "日志现可在web界面系统日志中查看"
 }
 stop_adbyby(){
     /etc/init.d/adbyby stop && echo -e "${Info} 停止成功"
 }
+#  ${Green_font_prefix}2.${Font_color_suffix} 添加定时清空日志功能
 auto_adupdate_install(){
 	echo && echo -e "
 ————————————
  ${Green_font_prefix}1.${Font_color_suffix} 添加自动更新规则功能  
- ${Green_font_prefix}2.${Font_color_suffix} 添加定时清空日志功能
 ————————————
- ${Green_font_prefix}3.${Font_color_suffix} 重启crontab进程
- ${Green_font_prefix}4.${Font_color_suffix} 退出
+ ${Green_font_prefix}2.${Font_color_suffix} 重启crontab进程
+ ${Green_font_prefix}3.${Font_color_suffix} 退出
 ————————————
  $Tip 请先下载更新脚本，否则该功能不生效!!!" && echo
-    read -p " 现在选择顶部选项 [1-4]: " input
+    read -p " 现在选择顶部选项 [1-3]: " input
     case $input in 
      1) auto_adupdate_auto_install;;
-     2) add_clearlog;;
-	 3) restart_crontab;;
-	 4) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
+    #  2) add_clearlog;;
+	 2) restart_crontab;;
+	 3) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-3]" && exit 1;;
     esac
 }
 auto_adupdate_auto_install(){
@@ -130,7 +131,8 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
+       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
+    #    echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	 else
@@ -138,7 +140,8 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
+       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
+    #    echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron       
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	fi 
@@ -153,93 +156,93 @@ auto_adupdate1_install(){
 auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
-	echo -e "${Info} '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'"
+	echo -e "${Info} '0 */6 * * * /usr/share/adbyby/adupdate.sh'"
     exit 0
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
-    echo -e "\n0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1" >> $crontab
+    echo -e "0 */6 * * * /usr/share/adbyby/adupdate.sh" >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
-add_clearlog(){
-    if [ -e "$cron" ]; then
-     if  grep -q pandorabox /etc/banner ; then
-       	if  grep -q adbyby脚本日志清空 $cron ; then
-	        plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
-	        rod=`expr $plan_the_task_line - 4`
-	        sed -i "$rod,+4d" $cron
-            echo -e "\nconfig task" >> $cron
-            echo "	option enabled '1'" >> $cron
-            echo "	option task_name 'adbyby脚本日志清空'" >> $cron
-            echo "	option custom '1'" >> $cron
-            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
-            /etc/init.d/cron restart
-            echo -e "${Info} 写入完成";
-	    else
-            echo -e "\nconfig task" >> $cron
-            echo "	option enabled '1'" >> $cron
-            echo "	option task_name 'adbyby脚本日志清空'" >> $cron
-            echo "	option custom '1'" >> $cron
-            echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
-            /etc/init.d/cron restart
-            echo -e "${Info} 写入完成";
-	    fi 
-     else
-        echo -e "${Error} 因没有对应固件无法做支持"
-        echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
-	    echo -e "${Info} '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1'"
-        exit 0
-     fi
-    else
-     sed -i '/clear adupdate log/d' $crontab
-     echo -e "\n0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log" >> $crontab
-     /etc/init.d/cron restart
-     echo -e "${Info} 写入完成"
-    fi  
-}
+# add_clearlog(){
+#     if [ -e "$cron" ]; then
+#      if  grep -q pandorabox /etc/banner ; then
+#        	if  grep -q adbyby脚本日志清空 $cron ; then
+# 	        plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
+# 	        rod=`expr $plan_the_task_line - 4`
+# 	        sed -i "$rod,+4d" $cron
+#             echo -e "\nconfig task" >> $cron
+#             echo "	option enabled '1'" >> $cron
+#             echo "	option task_name 'adbyby脚本日志清空'" >> $cron
+#             echo "	option custom '1'" >> $cron
+#             echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
+#             /etc/init.d/cron restart
+#             echo -e "${Info} 写入完成";
+# 	    else
+#             echo -e "\nconfig task" >> $cron
+#             echo "	option enabled '1'" >> $cron
+#             echo "	option task_name 'adbyby脚本日志清空'" >> $cron
+#             echo "	option custom '1'" >> $cron
+#             echo "	option custom_cron_table '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log'" >> $cron
+#             /etc/init.d/cron restart
+#             echo -e "${Info} 写入完成";
+# 	    fi 
+#      else
+#         echo -e "${Error} 因没有对应固件无法做支持"
+#         echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
+# 	    echo -e "${Info} '0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1'"
+#         exit 0
+#      fi
+#     else
+#      sed -i '/clear adupdate log/d' $crontab
+#      echo -e "\n0 1 * * 1 echo "" > /tmp/log/adupdate.log 2>&1 #clear adupdate log" >> $crontab
+#      /etc/init.d/cron restart
+#      echo -e "${Info} 写入完成"
+#     fi  
+# }
 auto_adupdate_uninstall(){
 	echo && echo -e "
 ————————————
  ${Green_font_prefix}1.${Font_color_suffix} 移除自动更新规则功能   
- ${Green_font_prefix}2.${Font_color_suffix} 移除定时清空日志功能
 ————————————
- ${Green_font_prefix}3.${Font_color_suffix} 重启crontab进程
- ${Green_font_prefix}4.${Font_color_suffix} 退出
+ ${Green_font_prefix}2.${Font_color_suffix} 重启crontab进程
+ ${Green_font_prefix}3.${Font_color_suffix} 退出
 ———————————— 
  $Tip 仅限删除本脚本添加的计划任务 " && echo
-    read -p " 现在选择顶部选项 [1-4]: " input
+#   ${Green_font_prefix}2.${Font_color_suffix} 移除定时清空日志功能
+    read -p " 现在选择顶部选项 [1-3]: " input
     case $input in 
 	 1) auto_adupdate_auto_uninstall;;    
-	 2) delete_clearlog;;
-	 3) restart_crontab;;
-	 4) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-4]" && exit 1;;
+	#  2) delete_clearlog;;
+	 2) restart_crontab;;
+	 3) exit 0	;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-3]" && exit 1;;
     esac
 }
-delete_clearlog(){
- if [ -e "$cron" ]; then
-  if  grep -q pandorabox /etc/banner ; then
-   if  grep -q adbyby脚本日志清空 $cron ; then
-	 plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
-	 rod=`expr $plan_the_task_line - 4`
-	 sed -i "$rod,+4d" $cron
-     sed -i '/clear adupdate log/d' $crontab
-	 /etc/init.d/cron restart
-     echo -e "${Info} 删除成功";
-   else
-     echo -e "${Error} 未添加计划任务"
-   fi
-  else
-     echo -e "${Error} 不支持当前固件，请手动删除计划任务"
-     exit 0    
-  fi
- else
-   	sed -i '/clear adupdate log/d' $crontab
-    /etc/init.d/cron restart 
-    echo -e "${Info} 删除成功"
- fi  
-}
+# delete_clearlog(){
+#  if [ -e "$cron" ]; then
+#   if  grep -q pandorabox /etc/banner ; then
+#    if  grep -q adbyby脚本日志清空 $cron ; then
+# 	 plan_the_task_line=$(grep -n "clear adupdate log" $cron  | awk '{print $1}' | sed 's/://g')
+# 	 rod=`expr $plan_the_task_line - 4`
+# 	 sed -i "$rod,+4d" $cron
+#      sed -i '/clear adupdate log/d' $crontab
+# 	 /etc/init.d/cron restart
+#      echo -e "${Info} 删除成功";
+#    else
+#      echo -e "${Error} 未添加计划任务"
+#    fi
+#   else
+#      echo -e "${Error} 不支持当前固件，请手动删除计划任务"
+#      exit 0    
+#   fi
+#  else
+#    	sed -i '/clear adupdate log/d' $crontab
+#     /etc/init.d/cron restart 
+#     echo -e "${Info} 删除成功"
+#  fi  
+# }
 auto_adupdate_auto_uninstall(){                                
  if [ -e "$cron" ]; then
   if  grep -q pandorabox /etc/banner ; then

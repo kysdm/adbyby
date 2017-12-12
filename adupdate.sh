@@ -4,7 +4,7 @@ alias echo_date="echo 【$(date +%Y年%m月%d日\ %X)】:"
 export ADBYBY=/usr/share/adbyby
 judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.1.7"
+sh_ver="1.1.8"
 github_rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 coding_rules="https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master"
 #hiboy_rules="http://opt.cn2qq.com/opt-file"
@@ -18,28 +18,38 @@ rm_cache(){
 }
 judge_update(){
     if [ "$lazy_online"x == "$lazy_local"x ]; then
-      echo_date "本地lazy规则已经最新，无需更新" 
+      echo_date "本地lazy规则已经最新，无需更新"
+      logger -t "【Adbyby】" -p cron.info "本地lazy规则已经最新，无需更新" 
         if [ "$video_online"x == "$video_local"x ]; then
           echo_date "本地video规则已经最新，无需更新"
-	        echo_date "$separated脚本结束运行$separated" 
+          logger -t "【Adbyby】" -p cron.info "本地video规则已经最新，无需更新"
+	        echo_date "$separated脚本结束运行$separated"
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
           rm_cache && exit 0
         else
           echo_date "检测到video规则更新，下载规则中..."
+          logger -t "【Adbyby】" -p cron.info "检测到video规则更新，下载规则中..."
           download_video;restart_ad
           echo_date "$separated脚本结束运行$separated"
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
           rm_cache && exit 0
         fi
     else
       echo_date "检测到lazy规则更新，下载规则中..."
+      logger -t "【Adbyby】" -p cron.info "检测到lazy规则更新，下载规则中..."
         if [ "$video_online"x == "$video_local"x ]; then
           echo_date "本地video规则已经最新，无需更新"
+          logger -t "【Adbyby】" -p cron.info "本地video规则已经最新，无需更新"
           download_lazy;restart_ad
           echo_date "$separated脚本结束运行$separated"
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
           rm_cache && exit 0
         else
           echo_date "检测到video规则更新，下载规则中..."
+          logger -t "【Adbyby】" -p cron.info "检测到video规则更新，下载规则中..."
           download_lazy;download_video;restart_ad
           echo_date "$separated脚本结束运行$separated"
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
           rm_cache && exit 0
         fi
     fi
@@ -47,32 +57,40 @@ judge_update(){
 download_lazy(){
     wget --no-check-certificate -O /tmp/lazy.txt $coding_rules/lazy.txt
       if [ "$?"x != "0"x ]; then
-        echo_date "【lazy】下载coding中的规则失败，尝试下载github中的规则"
+        echo_date "下载coding中的lazy规则失败，尝试下载github中的规则"
+        logger -t "【Adbyby】" -p cron.error "下载coding中的lazy规则失败，尝试下载github中的规则"
         wget --no-check-certificate -O /tmp/lazy.txt $github_rules/lazy.txt
           if [ "$?"x != "0"x ]; then
-            echo_date "【lazy】双双失败GG，请检查网络"
+            echo_date "lazy规则下载失败，请检查网络"
+            logger -t "【Adbyby】" -p cron.error "lazy下载失败，请检查网络"
           else
-            echo_date "【lazy】下载成功，正在应用..."
+            echo_date "lazy规则下载成功，正在应用..."
+            logger -t "【Adbyby】" -p cron.info "lazy规则下载成功，正在应用..."
             cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt
           fi  
       else
         echo_date "【lazy】下载成功，正在应用..."
+        logger -t "【Adbyby】" -p cron.info "lazy规则下载成功，正在应用..."
         cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt
       fi  
 }
 download_video(){
     wget --no-check-certificate -O /tmp/video.txt $coding_rules/video.txt
       if [ "$?"x != "0"x ]; then
-        echo_date "【video】下载Coding中的规则失败，尝试下载Github中的规则"
+        echo_date "下载Coding中的video规则失败，尝试下载Github中的规则"
+        logger -t "【Adbyby】" -p cron.error "下载Coding中的video规则失败，尝试下载Github中的规则"
         wget --no-check-certificate -O /tmp/video.txt $github_rules/video.txt
           if [ "$?"x != "0"x ]; then           
-            echo_date "【video】双双失败GG，请检查网络"
+            echo_date "video规则下载失败，请检查网络"
+            logger -t "【Adbyby】" -p cron.error "video规则下载失败，请检查网络"
           else
-            echo_date "【video】下载成功，正在应用..."
+            echo_date "video规则下载成功，正在应用..."
+            logger -t "【Adbyby】" -p cron.info "video规则下载成功，正在应用..."
             cp -f /tmp/lazy.txt $ADBYBY/data/lazy.txt
           fi       
       else
-        echo_date "【video】下载成功，正在应用..."
+        echo_date "video规则下载成功，正在应用..."
+        logger -t "【Adbyby】" -p cron.info "video规则下载成功，正在应用..."
         cp -f /tmp/video.txt $ADBYBY/data/video.txt
       fi  
 }
@@ -84,18 +102,24 @@ download_video(){
 # }
 # check_rules(){
     echo_date "$separated脚本开始运行$separated" && cd /tmp
+    logger -t "【Adbyby】" -p cron.info "更新脚本开始运行"
     md5sum /usr/share/adbyby/data/lazy.txt /usr/share/adbyby/data/video.txt > local-md5.json
     wget --no-check-certificate https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json
       if [ "$?"x != "0"x ]; then
-         echo_date "获取在线规则时间失败" && exit 0       
+         echo_date "获取在线规则MD5失败" 
+         logger -t "【Adbyby】" -p cron.error "获取在线规则MD5失败" 
+         echo_date "$separated脚本结束运行$separated"
+         logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
+         exit 0
       else
          lazy_local=$(grep 'lazy' local-md5.json | awk -F' ' '{print $1}')
          video_local=$(grep 'video' local-md5.json | awk -F' ' '{print $1}')  
          lazy_online=$(sed  's/":"/\n/g' md5.json  |  sed  's/","/\n/g' | sed -n '2p')
          video_online=$(sed  's/":"/\n/g' md5.json  |  sed  's/","/\n/g' | sed -n '4p')
          echo_date "获取在线规则MD5成功，正在判断是否有更新中"
+         logger -t "【Adbyby】" -p cron.info "获取在线规则MD5成功，正在判断是否有更新中"
          judge_update
-      fi  
+      fi
 # }
 # action=$1
 # if [[ "${action}" == "update" ]]; then
