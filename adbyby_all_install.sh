@@ -13,7 +13,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.3.9"
+sh_ver="1.4.0"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -131,8 +131,8 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
-    #    echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
+       echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
+    #    echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	 else
@@ -140,8 +140,8 @@ auto_adupdate1_install(){
        echo "	option enabled '1'" >> $cron
        echo "	option task_name 'adbyby规则更新'" >> $cron
        echo "	option custom '1'" >> $cron
-       echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
-    #    echo "	option custom_cron_table '0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron       
+       echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
+    #    echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1'" >> $cron       
        /etc/init.d/cron restart
        echo -e "${Info} 写入完成";
 	fi 
@@ -149,19 +149,19 @@ auto_adupdate1_install(){
 # auto_adupdate2_install(){
 # 	sed -i '/adbyby/d' $crontab
 #     echo "" >> $crontab
-#     echo -e "\n0 */6 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1" >> $crontab
+#     echo -e "\n0 */3 * * * /usr/share/adbyby/adupdate.sh >> /tmp/log/adupdate.log 2>&1" >> $crontab
 #     /etc/init.d/cron restart 
 #     echo -e "${Info} 写入完成"
 # }
 auto_adupdate3_install(){
     echo -e "${Error} 因没有对应固件无法做支持"
     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
-	echo -e "${Info} '0 */6 * * * /usr/share/adbyby/adupdate.sh'"
+	echo -e "${Info} '0 */3 * * * /usr/share/adbyby/adupdate.sh'"
     exit 0
 }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
-    echo -e "0 */6 * * * /usr/share/adbyby/adupdate.sh" >> $crontab
+    echo -e "0 */3 * * * /usr/share/adbyby/adupdate.sh" >> $crontab
     /etc/init.d/cron restart 
     echo -e "${Info} 写入完成"
 }
