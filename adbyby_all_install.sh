@@ -92,7 +92,11 @@ auto_adupdate_auto_install(){
      if  grep -q pandorabox /etc/banner ; then
         auto_adupdate1_install
      else
-        auto_adupdate3_install    
+        if  grep -q rapistor /etc/banner ; then   #明月永在固件
+          auto_adupdate4_install
+        else
+          auto_adupdate3_install    
+        fi 
      fi
     else
         auto_adupdate4_install
@@ -140,7 +144,11 @@ auto_adupdate_auto_uninstall(){
       sed -i '/adbyby/d' $crontab
       /etc/init.d/cron restart
   else
-     echo -e "${Error} 不支持当前固件，请手动删除计划任务" && exit 0 
+     if  grep -q rapistor /etc/banner ; then   #明月永在固件
+       auto_adupdate2_uninstall
+     else        
+       echo -e "${Error} 不支持当前固件，请手动删除计划任务" && exit 0
+     fi
   fi
  else
    auto_adupdate2_uninstall
