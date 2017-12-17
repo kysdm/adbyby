@@ -13,7 +13,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.4.1"
+sh_ver="1.4.3"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -88,18 +88,27 @@ stop_adbyby(){
     /etc/init.d/adbyby stop && echo -e "${Info} 停止成功"
 }
 auto_adupdate_auto_install(){
-    if [ -e "$cron" ]; then
-     if  grep -q pandorabox /etc/banner ; then
+    # if [ -e "$cron" ]; then
+    #  if  grep -q pandorabox /etc/banner ; then
+    #     auto_adupdate1_install
+    #  else
+    #     if  grep -q rapistor /etc/banner ; then   #明月永在固件
+    #       auto_adupdate4_install
+    #     else
+    #       auto_adupdate3_install    
+    #     fi 
+    #  fi
+    # else
+    #     auto_adupdate4_install
+    # fi  
+    if  grep -q pandorabox /etc/banner ; then
+      if [ -e "$cron" ]; then
         auto_adupdate1_install
-     else
-        if  grep -q rapistor /etc/banner ; then   #明月永在固件
-          auto_adupdate4_install
-        else
-          auto_adupdate3_install    
-        fi 
-     fi
-    else
+      else
         auto_adupdate4_install
+      fi
+    else
+      auto_adupdate4_install
     fi  
 }
 auto_adupdate1_install(){
@@ -125,12 +134,12 @@ auto_adupdate1_install(){
        echo -e "${Info} 写入完成";
 	fi 
 }
-auto_adupdate3_install(){
-    echo -e "${Error} 因没有对应固件无法做支持"
-    echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
-	echo -e "${Info} '0 */3 * * * /usr/share/adbyby/adupdate.sh'"
-    exit 0
-}
+# auto_adupdate3_install(){
+#     echo -e "${Error} 因没有对应固件无法做支持"
+#     echo -e "${Info} 请手动添加计划任务到系统中，cron原生参数如下"
+# 	echo -e "${Info} '0 */3 * * * /usr/share/adbyby/adupdate.sh'"
+#     exit 0
+# }
 auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
     echo -e "0 */3 * * * /usr/share/adbyby/adupdate.sh" >> $crontab
@@ -138,21 +147,30 @@ auto_adupdate4_install(){
     echo -e "${Info} 写入完成"
 }
 auto_adupdate_auto_uninstall(){                                
- if [ -e "$cron" ]; then
-  if  grep -q pandorabox /etc/banner ; then
-      auto_adupdate1_uninstall
-      sed -i '/adbyby/d' $crontab
-      /etc/init.d/cron restart
-  else
-     if  grep -q rapistor /etc/banner ; then   #明月永在固件
-       auto_adupdate2_uninstall
-     else        
-       echo -e "${Error} 不支持当前固件，请手动删除计划任务" && exit 0
-     fi
-  fi
- else
-   auto_adupdate2_uninstall
- fi  
+#  if [ -e "$cron" ]; then
+#   if  grep -q pandorabox /etc/banner ; then
+#       auto_adupdate1_uninstall
+#       sed -i '/adbyby/d' $crontab
+#       /etc/init.d/cron restart
+#   else
+#      if  grep -q rapistor /etc/banner ; then   #明月永在固件
+#        auto_adupdate2_uninstall
+#      else        
+#        echo -e "${Error} 不支持当前固件，请手动删除计划任务" && exit 0
+#      fi
+#   fi
+#  else
+#    auto_adupdate2_uninstall
+#  fi
+    if  grep -q pandorabox /etc/banner ; then
+      if [ -e "$cron" ]; then
+        auto_adupdate1_uninstall
+      else
+        auto_adupdate2_uninstall
+      fi
+    else
+        auto_adupdate2_uninstall
+    fi 
 }
 auto_adupdate1_uninstall(){
 	if  grep -q adupdate $cron ; then
