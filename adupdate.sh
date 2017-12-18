@@ -2,9 +2,9 @@
 #kysdm(gxk7231@gmail.com)
 alias echo_date="echo 【$(date +%Y年%m月%d日\ %X)】:"
 export ADBYBY=/usr/share/adbyby
-judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
+# judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.1.9"
+sh_ver="1.2.0"
 github_rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 coding_rules="https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master"
 #hiboy_rules="http://opt.cn2qq.com/opt-file"

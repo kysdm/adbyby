@@ -13,14 +13,14 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.4.3"
+sh_ver="1.4.4"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
      if [ "$?"x == "0"x ]; then
-      chmod 777 $ADBYBY/adupdate.sh && echo -e "${Info} 下载成功"
+      chmod 777 $ADBYBY/adupdate.sh && echo -e "${Info} 规则辅助更新脚本下载成功"
      else
-      echo -e "${Error} 下载失败" && exit 1
+      echo -e "${Error} 规则辅助更新脚本下载失败" && exit 1
      fi  
 }
 Update_all_install(){
@@ -73,7 +73,7 @@ Update_adupdate(){
 	exit 0
 }
 delete_adupdate(){
- 	rm -f $ADBYBY/adupdate.sh $ADBYBY/rule_status.txt && echo -e "${Info} 删除成功"
+ 	rm -f $ADBYBY/adupdate.sh $ADBYBY/rule_status.txt && echo -e "${Info} 规则辅助更新脚本删除成功"
 }
 run_adupdate(){
     sh $ADBYBY/adupdate.sh
@@ -123,7 +123,7 @@ auto_adupdate1_install(){
        echo "	option custom '1'" >> $cron
        echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
        /etc/init.d/cron restart
-       echo -e "${Info} 写入完成";
+       echo -e "${Info} 计划任务写入完成";
 	 else
        echo -e "\nconfig task" >> $cron
        echo "	option enabled '1'" >> $cron
@@ -131,7 +131,7 @@ auto_adupdate1_install(){
        echo "	option custom '1'" >> $cron
        echo "	option custom_cron_table '0 */3 * * * /usr/share/adbyby/adupdate.sh'" >> $cron
        /etc/init.d/cron restart
-       echo -e "${Info} 写入完成";
+       echo -e "${Info} 计划任务写入完成";
 	fi 
 }
 # auto_adupdate3_install(){
@@ -144,7 +144,7 @@ auto_adupdate4_install(){
 	sed -i '/adbyby/d' $crontab
     echo -e "0 */3 * * * /usr/share/adbyby/adupdate.sh" >> $crontab
     /etc/init.d/cron restart 
-    echo -e "${Info} 写入完成"
+    echo -e "${Info} 计划任务写入完成"
 }
 auto_adupdate_auto_uninstall(){                                
 #  if [ -e "$cron" ]; then
@@ -186,7 +186,7 @@ auto_adupdate1_uninstall(){
 auto_adupdate2_uninstall(){
 	sed -i '/adbyby/d' $crontab
     /etc/init.d/cron restart 
-    echo -e "${Info} 删除成功"
+    echo -e "${Info} 计划任务删除成功"
 }
 adbyby_install(){
     echo && echo -e "
