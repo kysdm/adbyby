@@ -1,4 +1,0 @@
-#!/bin/sh
-if pidof adbyby>/dev/null; then
-	/etc/init.d/adbyby restart
-fi
