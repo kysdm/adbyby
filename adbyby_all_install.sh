@@ -14,7 +14,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.5.0"
+sh_ver="1.5.1"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -200,8 +200,8 @@ adbyby_install(){
   ${Green_font_prefix}6.${Font_color_suffix} 安装7620A（N)和7621 OPENWRT官版专用版
   ${Green_font_prefix}7.${Font_color_suffix} 安装7620A（N)和7621 pandorabox专用版(2016.10之后的固件)
   ${Green_font_prefix}8.${Font_color_suffix} 安装7620A（N)和7621 pandorabox小闪存专用版(每次开机时下载主程序到内存中运行)
-  ${Green_font_prefix}9.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件)(每次开机时下载主程序到内存中运行)
-  ${Green_font_prefix}10.${Font_color_suffix} 安装X86版
+  ${Green_font_prefix}9.${Font_color_suffix} 安装最新 pandorabox小闪存专用版(2016.10之后的固件,每次开机时下载主程序到内存中运行)
+ ${Green_font_prefix}10.${Font_color_suffix} 安装X86版
  ${Green_font_prefix}11.${Font_color_suffix} 安装X64版
  ${Green_font_prefix}12.${Font_color_suffix} 退出
 ————————————" && echo
@@ -369,7 +369,7 @@ echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 启用自用规则(会覆�
  ${Green_font_prefix}10.${Font_color_suffix} 升级规则辅助更新脚本 
  ${Green_font_prefix}11.${Font_color_suffix} 退出
 ————————————"
-    read -p " 现在选择顶部选项 [1-9]: " input
+    read -p " 现在选择顶部选项 [1-11]: " input
     case $input in 
 	 1) user_rules;;
      2) close_user_rules;;
@@ -382,7 +382,7 @@ echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 启用自用规则(会覆�
      9) Update_all_install;;
      10) Update_adupdate ;;    
 	 11) exit 0	;;
-	 *) echo -e "${Error} 请输入正确的数字 [1-9]" && exit 1;;
+	 *) echo -e "${Error} 请输入正确的数字 [1-11]" && exit 1;;
     esac 
 }
 #主菜单
