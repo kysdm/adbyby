@@ -13,7 +13,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.4.4"
+sh_ver="1.5.0"
 
 Download_adupdate(){
     wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -269,12 +269,21 @@ cat_time(){
     echo -e "video: $video_time"    
 }
 ######################################################
+#判断一些文件是否存在，以免后续报错，就这样写了 简单明了
  if [ ! -x "$ADBYBY/adbyby_all_install.sh" ]; then
    chmod 777 $ADBYBY/adbyby_all_install.sh
  fi
  if [ ! -e "$ADBYBY/rule_status.txt" ]; then
     touch $ADBYBY/rule_status.txt
     echo "0" > $ADBYBY/rule_status.txt
+ fi   
+ if [ ! -e "$ADBYBY/wechat_status" ]; then
+    touch $ADBYBY/wechat_status
+    echo "off" > $ADBYBY/wechat_status
+ fi
+ if [ ! -e "$ADBYBY/wechat_sckey" ]; then
+    touch $ADBYBY/wechat_sckey
+    echo "" > $ADBYBY/wechat_sckey
  fi   
 ######################################################
 user_rules(){
@@ -322,34 +331,56 @@ one_button_removal(){
       echo -e "${Error} 未安装主程序"
    fi 
 }
+
+#####
+#Server酱 微信推送
+#因为以前写的自己也搞不清了 凑合下好了
+wechat_on(){
+   echo -e "${Info} 请到 http://sc.ftqq.com 获取SCKEY"
+   read -p " 请输入SCKEY：" SCKEY
+   echo $SCKEY > $ADBYBY/wechat_sckey
+   echo "on" > $ADBYBY/wechat_status
+   echo -e "${Info} 已启用微信通知"
+}
+wechat_off(){
+   echo "off" > $ADBYBY/wechat_status
+   echo -e "${Info} 已禁用微信通知"
+   echo -e "${Info} SCKEY不会自动清除，如需要清除请进入adbyby安装目录后运行命令：rm -f wechat_sckey"
+}
+#####
+
 #其他功能 
 other(){
   echo -e "
 ————————————"
 echo -e "  ${Green_font_prefix}1.${Font_color_suffix} 启用自用规则(会覆盖自定义规则文件)
-  ${Green_font_prefix}1.${Font_color_suffix} 禁用自用规则(会覆盖自定义规则文件)  
+  ${Green_font_prefix}2.${Font_color_suffix} 禁用自用规则(会覆盖自定义规则文件)  
+  ${Green_font_prefix}3.${Font_color_suffix} 启用微信通知
+  ${Green_font_prefix}4.${Font_color_suffix} 禁用微信通知 (默认)
 ————————————
-  ${Green_font_prefix}3.${Font_color_suffix} 重启ADBYBY进程
-  ${Green_font_prefix}4.${Font_color_suffix} 停止ADBYBY进程
-  ${Green_font_prefix}5.${Font_color_suffix} 重启crontab进程
+  ${Green_font_prefix}5.${Font_color_suffix} 重启ADBYBY进程
+  ${Green_font_prefix}6.${Font_color_suffix} 停止ADBYBY进程
+  ${Green_font_prefix}7.${Font_color_suffix} 重启crontab进程
 ————————————   
-  ${Green_font_prefix}6.${Font_color_suffix} 查看当前规则时间
+  ${Green_font_prefix}8.${Font_color_suffix} 查看当前规则时间
 ———————————— 
-  ${Green_font_prefix}7.${Font_color_suffix} 升级一键管理脚本脚本
-  ${Green_font_prefix}8.${Font_color_suffix} 升级规则辅助更新脚本 
-  ${Green_font_prefix}9.${Font_color_suffix} 退出
+  ${Green_font_prefix}9.${Font_color_suffix} 升级一键管理脚本脚本
+ ${Green_font_prefix}10.${Font_color_suffix} 升级规则辅助更新脚本 
+ ${Green_font_prefix}11.${Font_color_suffix} 退出
 ————————————"
     read -p " 现在选择顶部选项 [1-9]: " input
     case $input in 
 	 1) user_rules;;
      2) close_user_rules;;
-     3) restart_adbyby;;
-     4) stop_adbyby;;
-     5) restart_crontab;;
-     6) cat_time;;
-     7) Update_all_install;;
-     8) Update_adupdate ;;    
-	 9) exit 0	;;
+     3) wechat_on;;
+     4) wechat_off;;
+     5) restart_adbyby;;
+     6) stop_adbyby;;
+     7) restart_crontab;;
+     8) cat_time;;
+     9) Update_all_install;;
+     10) Update_adupdate ;;    
+	 11) exit 0	;;
 	 *) echo -e "${Error} 请输入正确的数字 [1-9]" && exit 1;;
     esac 
 }

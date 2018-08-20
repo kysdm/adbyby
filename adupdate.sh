@@ -4,10 +4,15 @@ alias echo_date="echo 【$(date +%Y年%m月%d日\ %X)】:"
 export ADBYBY=/usr/share/adbyby
 # judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.2.0"
+sh_ver="1.3.0"
 github_rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 coding_rules="https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master"
 #hiboy_rules="http://opt.cn2qq.com/opt-file"
+wechat_text="adbyby规则更新"
+wechat_key=$(cat /usr/share/adbyby/wechat_sckey | awk -F' ' '{print $1}')
+wechat_status=$(cat /usr/share/adbyby/wechat_status | awk -F' ' '{print $1}')
+lazy_time=$(sed -n '1p' /usr/share/adbyby/data/lazy.txt | awk -F' ' '{print $3,$4}')
+video_time=$(sed -n '1p' /usr/share/adbyby/data/video.txt | awk -F' ' '{print $3,$4}')
 
 restart_ad(){
   /etc/init.d/adbyby restart >/dev/null 2>&1
@@ -30,9 +35,14 @@ judge_update(){
           echo_date "检测到video规则更新，下载规则中..."
           logger -t "【Adbyby】" -p cron.info "检测到video规则更新，下载规则中..."
           download_video;user_rules;rm_cache;restart_ad    
+          #微信通知
+          if [ "$wechat_status"x == "on"x ]; then
+            video_time_new=$(sed -n '1p' /usr/share/adbyby/data/video.txt | awk -F' ' '{print $3,$4}')
+            wechat_desp="video规则已更新：$video_time → $video_time_new"
+            curl -s -G --data-urlencode "text=$wechat_text" --data-urlencode "desp=$wechat_desp" http://sc.ftqq.com/$wechat_key.send
+          fi 
           echo_date "$separated脚本结束运行$separated"
-          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
-          
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"         
         fi
     else
       echo_date "检测到lazy规则更新，下载规则中..."
@@ -41,14 +51,27 @@ judge_update(){
           echo_date "本地video规则已经最新，无需更新"
           logger -t "【Adbyby】" -p cron.info "本地video规则已经最新，无需更新"
           download_lazy;user_rules;rm_cache;restart_ad
+          #微信通知
+          if [ "$wechat_status"x == "on"x ]; then
+            lazy_time_new=$(sed -n '1p' /usr/share/adbyby/data/lazy.txt | awk -F' ' '{print $3,$4}')
+            wechat_desp="lazy规则已更新：$lazy_time → $lazy_time_new"
+            curl -s -G --data-urlencode "text=$wechat_text" --data-urlencode "desp=$wechat_desp" http://sc.ftqq.com/$wechat_key.send  
+          fi      
           echo_date "$separated脚本结束运行$separated"
-          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"   
         else
           echo_date "检测到video规则更新，下载规则中..."
           logger -t "【Adbyby】" -p cron.info "检测到video规则更新，下载规则中..."
           download_lazy;download_video;user_rules;rm_cache;restart_ad
+          #微信通知
+          if [ "$wechat_status"x == "on"x ]; then
+            lazy_time_new=$(sed -n '1p' /usr/share/adbyby/data/lazy.txt | awk -F' ' '{print $3,$4}')
+            video_time_new=$(sed -n '1p' /usr/share/adbyby/data/video.txt | awk -F' ' '{print $3,$4}')
+            wechat_desp="lazy规则已更新：$lazy_time → $lazy_time_new , video规则已更新：$video_time → $video_time_new"
+            curl -s -G --data-urlencode "text=$wechat_text" --data-urlencode "desp=$wechat_desp" http://sc.ftqq.com/$wechat_key.send
+          fi   
           echo_date "$separated脚本结束运行$separated"
-          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"        
+          logger -t "【Adbyby】" -p cron.info "更新脚本结束运行"  
         fi
     fi
 }
@@ -116,6 +139,7 @@ user_rules(){
     echo_date "$separated脚本开始运行$separated" && cd /tmp
     logger -t "【Adbyby】" -p cron.info "更新脚本开始运行"
     wget --no-check-certificate https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json
+    #curl -k -o "adbyby_all_install.sh" "https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json"
       if [ "$?"x != "0"x ]; then
          echo_date "获取在线规则MD5失败" 
          logger -t "【Adbyby】" -p cron.error "获取在线规则MD5失败" 
@@ -131,9 +155,3 @@ user_rules(){
          logger -t "【Adbyby】" -p cron.info "获取在线规则MD5成功，正在判断是否有更新中"
          judge_update
       fi
-# }
-# action=$1
-# if [[ "${action}" == "update" ]]; then
-#   create_jd
-# 	check_rules
-# fi
