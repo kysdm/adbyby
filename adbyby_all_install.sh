@@ -1,5 +1,6 @@
 #!/bin/sh
 #kysdm(gxk7231@gmail.com)
+#能用么好了，要什么好看
 export ADBYBY=/usr/share/adbyby
 export config=/etc/config
 crontab=/etc/crontabs/root

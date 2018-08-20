@@ -8,7 +8,7 @@
 
     opkg update && opkg install wget
 
-安装curl(可选,微信通知需要curl):
+安装curl (可选,微信通知需要curl):
 
     opkg update && opkg install curl     
 
