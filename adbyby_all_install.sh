@@ -1,6 +1,7 @@
 #!/bin/sh
 #kysdm(gxk7231@gmail.com)
 #能用么好了，要什么好看
+#coding那边懒得去同步了
 export ADBYBY=/usr/share/adbyby
 export config=/etc/config
 crontab=/etc/crontabs/root
@@ -14,10 +15,11 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.5.1"
+sh_ver="1.5.2"
 
 Download_adupdate(){
-    wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
+    # wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
+    curl -k -o $ADBYBY/adupdate.sh $kysdm_github/master/adupdate.sh
      if [ "$?"x == "0"x ]; then
       chmod 777 $ADBYBY/adupdate.sh && echo -e "${Info} 规则辅助更新脚本下载成功"
      else
@@ -26,7 +28,8 @@ Download_adupdate(){
 }
 Update_all_install(){
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-    wget -t3 -T10 --no-check-certificate -q -O /tmp/adbyby_all_install.sh $kysdm_coding/master/adbyby_all_install.sh
+    # wget -t3 -T10 --no-check-certificate -q -O /tmp/adbyby_all_install.sh $kysdm_coding/master/adbyby_all_install.sh
+    curl -k -o /tmp/adbyby_all_install.sh $kysdm_github/master/adbyby_all_install.sh
 	sh_new_ver=$(grep 'sh_ver="' /tmp/adbyby_all_install.sh |awk -F "=" '{print $NF}'| sed 's/\"//g' | sed -n '1p')
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
@@ -51,7 +54,8 @@ Update_all_install(){
 Update_adupdate(){
     sh_ver=$(grep 'sh_ver="' $ADBYBY/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
     echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-    wget -t3 -T10 --no-check-certificate -q -O /tmp/adupdate.sh $kysdm_coding/master/adupdate.sh
+    # wget -t3 -T10 --no-check-certificate -q -O /tmp/adupdate.sh $kysdm_coding/master/adupdate.sh
+    curl -k -o /tmp/adupdate.sh $kysdm_github/master/adupdate.sh
 	sh_new_ver=$(grep 'sh_ver="' /tmp/adupdate.sh | awk -F "=" '{print $NF}' | sed 's/\"//g' | sed -n '1p' )
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
@@ -290,7 +294,8 @@ cat_time(){
 user_rules(){
     echo "1" > $ADBYBY/rule_status.txt
     cd /tmp
-    wget -t3 -T10 --no-check-certificate https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt
+    # wget -t3 -T10 --no-check-certificate https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt
+    curl -k -o /tmp/user-rules-adbyby.txt https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt
       if [ "$?"x == "0"x ]; then
         cp -f /tmp/user-rules-adbyby.txt $ADBYBY/user.txt
         echo -e "${Info} 规则下载成功" && restart_adbyby

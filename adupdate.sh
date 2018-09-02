@@ -5,7 +5,7 @@ alias echo_date="echo 【$(date +%Y年%m月%d日\ %X)】:"
 export ADBYBY=/usr/share/adbyby
 # judgment=$(sed -n '1p' $ADBYBY/create_jd.txt)
 separated="—————————————————————"
-sh_ver="1.3.1"
+sh_ver="1.3.2"
 github_rules="https://raw.githubusercontent.com/adbyby/xwhyc-rules/master"
 coding_rules="https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master"
 #hiboy_rules="http://opt.cn2qq.com/opt-file"
@@ -97,11 +97,13 @@ judge_update(){
     fi
 }
 download_lazy(){
-    wget --no-check-certificate -O /tmp/lazy.txt $coding_rules/lazy.txt
+    # wget --no-check-certificate -O /tmp/lazy.txt $coding_rules/lazy.txt
+    curl -k -o /tmp/lazy.txt $coding_rules/lazy.txt
       if [ "$?"x != "0"x ]; then
         echo_date "下载coding中的lazy规则失败，尝试下载github中的规则"
         logger -t "【Adbyby】" -p cron.error "下载coding中的lazy规则失败，尝试下载github中的规则"
-        wget --no-check-certificate -O /tmp/lazy.txt $github_rules/lazy.txt
+        # wget --no-check-certificate -O /tmp/lazy.txt $github_rules/lazy.txt
+        curl -k -o /tmp/lazy.txt $github_rules/lazy.txt
           if [ "$?"x != "0"x ]; then
             echo_date "lazy规则下载失败，请检查网络"
             logger -t "【Adbyby】" -p cron.error "lazy下载失败，请检查网络"
@@ -117,11 +119,13 @@ download_lazy(){
       fi  
 }
 download_video(){
-    wget --no-check-certificate -O /tmp/video.txt $coding_rules/video.txt
+    # wget --no-check-certificate -O /tmp/video.txt $coding_rules/video.txt
+    curl -k -o /tmp/video.txt $coding_rules/video.txt
       if [ "$?"x != "0"x ]; then
         echo_date "下载Coding中的video规则失败，尝试下载Github中的规则"
         logger -t "【Adbyby】" -p cron.error "下载Coding中的video规则失败，尝试下载Github中的规则"
-        wget --no-check-certificate -O /tmp/video.txt $github_rules/video.txt
+        # wget --no-check-certificate -O /tmp/video.txt $github_rules/video.txt
+        curl -k -o /tmp/video.txt $github_rules/video.txt
           if [ "$?"x != "0"x ]; then           
             echo_date "video规则下载失败，请检查网络"
             logger -t "【Adbyby】" -p cron.error "video规则下载失败，请检查网络"
@@ -139,7 +143,8 @@ download_video(){
 user_rules(){
    if  grep -q 1 /usr/share/adbyby/rule_status.txt ; then
       user_rule=$(sed -n '1p' $ADBYBY/user.txt |  awk -F' ' '{print $3,$4}')    
-      wget --no-check-certificate -O /tmp/user-rules-adbyby.txt https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt 
+      # wget --no-check-certificate -O /tmp/user-rules-adbyby.txt https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt 
+      curl -k -o /tmp/user-rules-adbyby.txt https://raw.githubusercontent.com/kysdm/ad-rules/master/user-rules-adbyby.txt
       if [ "$?"x != "0"x ]; then
         echo_date "下载自用规则失败"
         logger -t "【Adbyby】" -p cron.error "下载自用规则失败"
@@ -162,8 +167,8 @@ user_rules(){
 # check_rules(){
     echo_date "$separated脚本开始运行$separated" && cd /tmp
     logger -t "【Adbyby】" -p cron.info "更新脚本开始运行"
-    wget --no-check-certificate https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json
-    #curl -k -o "adbyby_all_install.sh" "https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json"
+    # wget --no-check-certificate https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json
+    curl -k -o /tmp/md5.json https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json
       if [ "$?"x != "0"x ]; then
          echo_date "获取在线规则MD5失败" 
          logger -t "【Adbyby】" -p cron.error "获取在线规则MD5失败" 

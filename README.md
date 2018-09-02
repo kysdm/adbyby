@@ -4,11 +4,12 @@
 
 请用 Xshell 连接你的路由
 
-安装wget:
+<!-- 安装wget:
 
-    opkg update && opkg install wget
+    opkg update && opkg install wget -->
 
-安装curl (可选,微信通知需要curl):
+<!-- 安装curl (可选,微信通知需要curl): -->
+安装curl
 
     opkg update && opkg install curl     
 
@@ -18,8 +19,8 @@
 
 下载脚本:
 
-    wget --no-check-certificate -O /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
-    
+    <!-- wget --no-check-certificate -O /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh -->
+    curl -k -o /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
 
 运行脚本:
 
