@@ -19,7 +19,6 @@
 
 下载脚本:
 
-    <!-- wget --no-check-certificate -O /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh -->
     curl -k -o /usr/share/adbyby/adbyby_all_install.sh https://raw.githubusercontent.com/kysdm/adbyby/master/adbyby_all_install.sh
 
 运行脚本:
