@@ -7,7 +7,7 @@ export config=/etc/config
 crontab=/etc/crontabs/root
 cron=/etc/config/cron
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
-luci="http://code.taobao.org/svn/luci-app-adbyby" 
+luci="https://raw.githubusercontent.com/kysdm/adbyby/master/luci-app-adbyby" 
 kysdm_github="https://raw.githubusercontent.com/kysdm/adbyby" 
 kysdm_coding="https://coding.net/u/kysdm/p/adbyby/git/raw"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
@@ -245,13 +245,15 @@ OPENWRT_dedicated(){
     opkg update && opkg install $luci/adbyby_2.7-7.0_ramips_24kec.ipk
 }
 pandorabox_dedicated_new(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
+    # opkg update && opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
+    echo 因链接失效，本地无备份，如有此文件，请联系我
 }
 pandorabox_dedicated_small(){
     opkg update && opkg install $luci/adbyby_mini_2.7-7.0_ralink.ipk
 }
 pandorabox_dedicated_small_new(){
-    opkg update && opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
+    # opkg update && opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
+    echo 因链接失效，本地无备份，如有此文件，请联系我
 }
 x86(){
     opkg update && opkg install $luci/adbyby_2.7-7.0_x86.ipk 
