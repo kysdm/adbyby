@@ -15,7 +15,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.5.2"
+sh_ver="1.5.3"
 
 Download_adupdate(){
     # wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
