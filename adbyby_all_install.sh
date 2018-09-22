@@ -15,7 +15,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.5.4"
+sh_ver="1.5.5"
 
 Download_adupdate(){
     # wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -227,8 +227,9 @@ adbyby_install(){
     esac
 }
 auto_adbyby_install(){
-    luci_version="adbyby_2.7-8.0_all.ipk"
-    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
+    # luci_version="adbyby_2.7-8.0_all.ipk"
+    # opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
+    echo 因原代码托管平台链接失效，此luci暂时失效。
 }
 ar71xx(){
     luci_version="adbyby_2.7-7.0_ar71xx.ipk"
