@@ -15,7 +15,7 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 opkg list-installed | awk -F' ' '{print $1}' > /tmp/installed.txt
-sh_ver="1.5.3"
+sh_ver="1.5.4"
 
 Download_adupdate(){
     # wget -t3 -T10 --no-check-certificate -O $ADBYBY/adupdate.sh $kysdm_coding/master/adupdate.sh
@@ -227,39 +227,48 @@ adbyby_install(){
     esac
 }
 auto_adbyby_install(){
-    opkg update && opkg install $luci/adbyby_2.7-8.0_all.ipk
+    luci_version="adbyby_2.7-8.0_all.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 ar71xx(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_ar71xx.ipk
+    luci_version="adbyby_2.7-7.0_ar71xx.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 arm(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_arm.ipk
+    luci_version="adbyby_2.7-7.0_arm.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 armv7(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_armv7.ipk
+    luci_version="adbyby_2.7-7.0_armv7.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 pandorabox_dedicated(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_ralink.ipk
+    luci_version="adbyby_2.7-7.0_ralink.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 OPENWRT_dedicated(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_ramips_24kec.ipk
+    luci_version="adbyby_2.7-7.0_ramips_24kec.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 pandorabox_dedicated_new(){
     # opkg update && opkg install $luci/adbyby_2.7-7.0_mipsel_24kec_dsp.ipk
     echo 因链接失效，本地无备份，如有此文件，请联系我
 }
 pandorabox_dedicated_small(){
-    opkg update && opkg install $luci/adbyby_mini_2.7-7.0_ralink.ipk
+    luci_version="adbyby_mini_2.7-7.0_ralink.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 pandorabox_dedicated_small_new(){
     # opkg update && opkg install $luci/adbyby_mini_2.7-7.0_mipsel_24kec_dsp.ipk
     echo 因链接失效，本地无备份，如有此文件，请联系我
 }
 x86(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_x86.ipk 
+    luci_version="adbyby_2.7-7.0_x86.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 x64(){
-    opkg update && opkg install $luci/adbyby_2.7-7.0_x64.ipk
+    luci_version="adbyby_2.7-7.0_x64.ipk"
+    opkg update && curl -k -o /tmp/$luci_version  $luci/$luci_version && opkg install /tmp/$luci_version & rm -f /tmp/$luci_version
 }
 adbyby_uninstall(){
    if  grep -q adbyby /tmp/installed.txt ; then
